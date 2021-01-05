@@ -1,0 +1,6 @@
+*.py[cod]
+work/
+output/
+pred.txt
+submit/
+submit.zip
