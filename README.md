@@ -128,5 +128,5 @@ You should be able to emulate the grading using the example data by running `bas
 
 ## Questions
 As more questions come in, we will create a FAQ here.
-In the mean time, please post your questions to edStem with the tag `project447`.
+In the mean time, please post your questions to edStem with the tag `Projects -> 447`.
 
