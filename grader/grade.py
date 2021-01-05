@@ -9,12 +9,18 @@ parser.add_argument('--verbose', action='store_true')
 args = parser.parse_args()
 
 
-def load_pred(fname):
+def load_pred(fname, force_limit=None):
     with open(fname) as f:
-        return [l[:-1].lower() for l in f]
+        loaded = []
+        for line in f:
+            line = line[:-1].lower()
+            if force_limit is not None:
+                line = line[:force_limit]
+            loaded.append(line)
+        return loaded
 
 
-pred = load_pred(args.fpred)
+pred = load_pred(args.fpred, force_limit=3)
 gold = load_pred(args.fgold)
 
 if len(pred) < len(gold):
