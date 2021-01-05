@@ -97,6 +97,8 @@ Name3,NetID3
 
 Your `src` directory must contain a `predict.sh` file, which, when executed as `bash src/predict.sh <path_to_test_data> <path_to_predictions>` must write predictions to the file `<path_to_predictions>`.
 For reference, the `predict.sh` file for this example project is in `src/predict.sh`
+Although we encourage you to follow conventions in the example project, it is not necessary to do so.
+*What is necessary is that `predict.sh` generates predictions according to spec*.
 
 On our end, we will extract this zip file and run the following command inside the unzipped directory.
 You should make sure that this works on your end.
