@@ -113,7 +113,7 @@ docker run --rm -v $PWD/src:/job/src -v $PWD/work:/job/work -v <path_to_test_dat
 If you are curious what these flags in `docker run` mean:
 
 - `--rm` remove container after running
-- `-v a:b` mount `a` in host machine (e.g. path on your machine outside docker) to the container `e.g. path in the docker container`.
+- `-v a:b` mount `a` in host machine (e.g. path on your machine outside docker) to the container (e.g. path in the docker container).
 
 Running this command will produce `output/pred.txt`, which we take to be your predictions on the heldout test data.
 We will then evaluate your success rate against the heldout answer key using `grader/grade.py`.
