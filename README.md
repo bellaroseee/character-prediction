@@ -124,3 +124,7 @@ For convenience, we have put the command we will likely run to grade your assign
 You should be able to emulate the grading using the example data by running `bash grader/grade.sh example`, which will write your results to the `output` directory.
 
 
+## Questions
+As more questions come in, we will create a FAQ here.
+In the mean time, please post your questions to edStem with the tag `project447`.
+
