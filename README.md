@@ -84,7 +84,7 @@ src  # source code directory for your program
 work  # checkpoint directory for your program, which contains any intermediate result you require to perform prediction, such as model parameters
 Dockerfile  # your Dockerfile
 team.txt  # your team information
-pred.txt  # your predictions for the example data `example/pred.txt`
+pred.txt  # your predictions for the example data `example/input.txt`
 ```
 
 In `team.txt`, please put your names and NetIDs in the following format:
