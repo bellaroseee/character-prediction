@@ -102,7 +102,7 @@ Although we encourage you to follow conventions in the example project, it is no
 
 On our end, we will extract this zip file and run the following command inside the unzipped directory.
 You should make sure that this works on your end.
-For example, you may consider going to a new directory, unzipping your submission zip file, and running the same command using the example data (e.g. set `<path_to_test_data>` to `./example`).
+For example, you may consider going to a new directory, unzipping your submission zip file, and running the same command using the example data (e.g. set `<path_to_test_data>` to `$PWD/example`).
 
 ```
 mkdir -p output
