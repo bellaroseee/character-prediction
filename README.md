@@ -77,7 +77,7 @@ We will not be doing anything very fancy with Docker.
 In fact, we provide you with a starter `Dockerfile`.
 You should install any dependencies in this Dockerfile you require to perform prediction.
 
-When you submit the project, you must submit a zip file `submit.zip` that contains the following:
+When you submit the project, you must submit a zip file `submit.zip` to edStem that contains the following:
 
 ```
 src  # source code directory for your program
