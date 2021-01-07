@@ -130,3 +130,26 @@ You should be able to emulate the grading using the example data by running `bas
 As more questions come in, we will create a FAQ here.
 In the mean time, please post your questions to edStem with the tag `Projects -> 447`.
 
+Can we have 2 or 4 instead of 3 members?
+> We strongly prefer that you have 3 members. If you would really like to have a group of 4, please instead do two groups of 2.
+
+How do we sign up groups?
+> Please make one group on Canvas by clicking `People -> Group -> +Group`. See [figs/canvas_group.png](figs/canvas_group.png) for an example.
+
+Will we get help in selecting datasets? Could we also get tips on finding good corpora?
+> Not at this time. Choosing and preprocessing your data is a key component of practising NLP in the real world and we would like you to experience it first hand.
+
+Is there a max processing time limit?
+> Yes, tentatively 30 minutes to run the test data.
+
+Is there a maximum size limit for the program?
+> Yes, tentatively 1 MB for `src` and 1 GB for your checkpoint
+
+What does it mean the astronaut "speaks at least one human language"? Will system support mix language .. like mix of English + a different language?
+> Your program may receive input that is not English. The input may be a mix of English and other languages.
+
+Can test sentences be virtually anything? e.g. they intentionally test robustness
+> Test sentences will not be adversarial. They will be reasonable dialogue utterances.
+
+Do we have unlimited appendix for final report? Such as a 1 page report with a 10 page clarification?
+> No. There will be no appendix.
