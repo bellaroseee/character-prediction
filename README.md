@@ -134,7 +134,7 @@ Can we have 2 or 4 instead of 3 members?
 > We strongly prefer that you have 3 members. If you would really like to have a group of 4, please instead do two groups of 2.
 
 How do we sign up groups?
-> Please make one group on Canvas by clicking `People -> Group -> +Group`. See [figs/canvas_group.png](figs/canvas_group.png) for an example.
+> We will send you a google form link. Please have one member in the group fill out the form.
 
 Will we get help in selecting datasets? Could we also get tips on finding good corpora?
 > Not at this time. Choosing and preprocessing your data is a key component of practising NLP in the real world and we would like you to experience it first hand.
