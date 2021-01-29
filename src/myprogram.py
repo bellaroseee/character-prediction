@@ -14,7 +14,7 @@ class MyModel:
     @classmethod
     def load_training_data(cls):
         # your code here
-        data = pd.read_csv('..\data\Processed_Atels.csv')
+        data = pd.read_csv('Processed_Atels.csv')
         text_processed = data["Text processed"]
         text = ""
         for row in text_processed:
