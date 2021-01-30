@@ -38,7 +38,7 @@ class MyModel:
             for t, char in enumerate(sentence):
                 x[i, t, char_indices[char]] = 1
             y[i, char_indices[next_chars[i]]] = 1
-        
+
         return [x, y]
 
     @classmethod
@@ -75,15 +75,17 @@ class MyModel:
     def save(self, work_dir):
         # your code here
         # this particular model has nothing to save, but for demonstration purposes we will save a blank file
-        with open(os.path.join(work_dir, 'model.checkpoint'), 'wt') as f:
-            f.write('dummy save')
+        # with open(os.path.join(work_dir, 'model.checkpoint'), 'wt') as f:
+        #     f.write('dummy save')
+        x = 1
 
     @classmethod
     def load(cls, work_dir):
         # your code here
         # this particular model has nothing to load, but for demonstration purposes we will load a blank file
-        with open(os.path.join(work_dir, 'model.checkpoint')) as f:
-            dummy_save = f.read()
+        # with open(os.path.join(work_dir, 'model.checkpoint')) as f:
+        #    dummy_save = f.read()
+        # return MyModel()
         return MyModel()
 
 
