@@ -47,7 +47,8 @@ class MyModel:
             [ # this is the first layer
             
                 keras.Input(shape=(MyModel.maxlen, len(MyModel.chars))), # instatntiate Keras tensor of shape (40, 180)
-                layers.LSTM(128), # 128 is the dimensionality of output space
+                layers.LSTM(128, return_sequences=True), # 128 is the dimensionality of output space
+                layers.LSTM(128),
                 layers.Dense(len(MyModel.chars), activation="softmax"), # densely connected NN layer with output of dimension 40 & softmax activation function.
             ], 
         )
@@ -57,7 +58,6 @@ class MyModel:
     
     @classmethod
     def load_training_data(cls):
-        # data, chars, char_indices, indices_char = MyModel.prep()
         chars = MyModel.chars
         char_indices = MyModel.char_indices
         indices_char = MyModel.indices_char
@@ -105,7 +105,7 @@ class MyModel:
         # your code here
         x, y = data
         batch_size = 128 #HYPERPARAMETER
-        MyModel.model.fit(x, y, batch_size=batch_size, epochs=1)
+        MyModel.model.fit(x, y, batch_size=batch_size, epochs=50)
         print("Finish training")
 
     def run_pred(self, data):
@@ -146,11 +146,15 @@ class MyModel:
     def save(self, work_dir):
         model = MyModel.model
         model.save(work_dir)
+        print("Saving model...")
+        model.summary()
 
     @classmethod
     def load(cls, work_dir):
         model = keras.models.load_model(work_dir)
         MyModel.model = model
+        print("Loading model...")
+        MyModel.model.summary()
         return MyModel()
 
 
