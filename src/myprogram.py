@@ -33,11 +33,9 @@ class MyModel:
     step = 3
     diversity = 1.0
 
-    def __init__(self):
+    def __init__(self, url):
         # Load Data
-        path_to_file = keras.utils.get_file(
-        "Processed_Atels", 
-        "https://raw.githubusercontent.com/bellaroseee/447-Group-Project/checkpoint-2/src/Processed_Atels.csv")
+        path_to_file = keras.utils.get_file("dataset", url)
         data = pd.read_csv(path_to_file)
         MyModel.data = data["Text processed"]
 
@@ -221,11 +219,11 @@ class MyModel:
         model.summary()
 
     @classmethod
-    def load(cls, work_dir):
+    def load(cls, work_dir, url):
         model = keras.models.load_model(work_dir)
         MyModel.model = model
         MyModel.model.summary()
-        return MyModel()
+        return MyModel(url)
 
 
 if __name__ == '__main__':
@@ -244,6 +242,7 @@ if __name__ == '__main__':
     # parser.add_argument('--lang_train', help='language to train (en_url, rus_url, ch_url, it_url, jp_url)', default='en_url')
     args = parser.parse_args()
 
+    
     random.seed(0)
 
     if args.mode == 'train':
@@ -251,7 +250,7 @@ if __name__ == '__main__':
             print('Making working directory {}'.format(args.work_dir))
             os.makedirs(args.work_dir)
         print('Instatiating model')
-        model = MyModel()
+        model = MyModel(en_url)
         print('Loading training data')
         train_data = MyModel.load_training_data()
         print('Training')
@@ -265,7 +264,7 @@ if __name__ == '__main__':
         model.run_dev()
     elif args.mode == 'test':
         print('Loading model')
-        model = MyModel.load(args.work_dir)
+        model = MyModel.load(args.work_dir, en_url)
         print('Loading test data from {}'.format(args.test_data))
         test_data = MyModel.load_test_data(args.test_data)
         print('Making predictions')
