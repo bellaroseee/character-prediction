@@ -33,9 +33,9 @@ class MyModel:
     step = 3
     diversity = 1.0
 
-    def __init__(self, url):
+    def __init__(self):
         # Load Data
-        path_to_file = keras.utils.get_file("dataset", url)
+        path_to_file = keras.utils.get_file("dataset", "https://raw.githubusercontent.com/bellaroseee/447-Group-Project/checkpoint-2/src/Processed_Atels.csv")
         data = pd.read_csv(path_to_file)
         MyModel.data = data["Text processed"]
 
@@ -219,11 +219,11 @@ class MyModel:
         model.summary()
 
     @classmethod
-    def load(cls, work_dir, url):
+    def load(cls, work_dir):
         model = keras.models.load_model(work_dir)
         MyModel.model = model
         MyModel.model.summary()
-        return MyModel(url)
+        return MyModel()
 
 
 if __name__ == '__main__':
@@ -250,7 +250,7 @@ if __name__ == '__main__':
             print('Making working directory {}'.format(args.work_dir))
             os.makedirs(args.work_dir)
         print('Instatiating model')
-        model = MyModel(en_url)
+        model = MyModel()
         print('Loading training data')
         train_data = MyModel.load_training_data()
         print('Training')
@@ -264,7 +264,7 @@ if __name__ == '__main__':
         model.run_dev()
     elif args.mode == 'test':
         print('Loading model')
-        model = MyModel.load(args.work_dir, en_url)
+        model = MyModel.load(args.work_dir)
         print('Loading test data from {}'.format(args.test_data))
         test_data = MyModel.load_test_data(args.test_data)
         print('Making predictions')
