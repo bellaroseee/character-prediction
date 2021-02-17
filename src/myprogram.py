@@ -237,6 +237,11 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     en_url = "https://raw.githubusercontent.com/bellaroseee/447-Group-Project/checkpoint-2/src/Processed_Atels.csv"
+    rus_url = "https://447groupproject7285.blob.core.windows.net/datasets/largeRussian.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
+    engl_url = "https://447groupproject7285.blob.core.windows.net/datasets/largeEnglish.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D”
+    ch_url = “https://447groupproject7285.blob.core.windows.net/datasets/largeChinese.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
+    It_url = "https://447groupproject7285.blob.core.windows.net/datasets/largeItalian.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
+    jp_url = "https://447groupproject7285.blob.core.windows.net/datasets/largeJapanese.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
     random.seed(0)
 
     if args.mode == 'train':
@@ -245,8 +250,10 @@ if __name__ == '__main__':
             os.makedirs(args.work_dir)
         print('Instatiating model')
         en_model = MyModel(en_url)
+        rus_model = MyModel(rus_url)
         print('Loading training data')
         train_data = MyModel.load_training_data()
+
         print('Training')
         en_model.run_train(train_data, args.work_dir)
         print('Saving model')
