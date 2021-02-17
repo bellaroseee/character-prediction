@@ -33,11 +33,11 @@ class MyModel:
     step = 3
     diversity = 1.0
 
-    def __init__(self):
+    def __init__(self, url):
         # Load Data
         path_to_file = keras.utils.get_file(
         "Processed_Atels", 
-        "https://raw.githubusercontent.com/bellaroseee/447-Group-Project/checkpoint-2/src/Processed_Atels.csv")
+        url)
         data = pd.read_csv(path_to_file)
         MyModel.data = data["Text processed"]
 
@@ -236,6 +236,7 @@ if __name__ == '__main__':
     parser.add_argument('--test_output', help='path to write test predictions', default='pred.txt')
     args = parser.parse_args()
 
+    en_url = "https://raw.githubusercontent.com/bellaroseee/447-Group-Project/checkpoint-2/src/Processed_Atels.csv"
     random.seed(0)
 
     if args.mode == 'train':
@@ -243,13 +244,13 @@ if __name__ == '__main__':
             print('Making working directory {}'.format(args.work_dir))
             os.makedirs(args.work_dir)
         print('Instatiating model')
-        model = MyModel()
+        en_model = MyModel(en_url)
         print('Loading training data')
         train_data = MyModel.load_training_data()
         print('Training')
-        model.run_train(train_data, args.work_dir)
+        en_model.run_train(train_data, args.work_dir)
         print('Saving model')
-        model.save(args.work_dir)
+        en_model.save(args.work_dir)
     elif args.mode == 'dev':
         print('Loading model')
         model = MyModel.load(args.work_dir)
