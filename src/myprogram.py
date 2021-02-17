@@ -145,7 +145,7 @@ class MyModel:
         prediction = []
 
         for inp in data:
-            inp = inp[-maxlen:]
+            inp = inp[-MyModel.maxlen:]
             sentence = inp
             print('\n...Generating with seed: "' + sentence + '"')
             guess = ""
@@ -221,11 +221,11 @@ class MyModel:
         model.summary()
 
     @classmethod
-    def load(cls, work_dir):
+    def load(cls, work_dir, url):
         model = keras.models.load_model(work_dir)
         MyModel.model = model
         MyModel.model.summary()
-        return MyModel()
+        return MyModel(url)
 
 
 if __name__ == '__main__':
@@ -258,7 +258,7 @@ if __name__ == '__main__':
         model.run_dev()
     elif args.mode == 'test':
         print('Loading model')
-        model = MyModel.load(args.work_dir)
+        model = MyModel.load(args.work_dir, en_url)
         print('Loading test data from {}'.format(args.test_data))
         test_data = MyModel.load_test_data(args.test_data)
         print('Making predictions')
