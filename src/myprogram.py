@@ -145,7 +145,7 @@ class MyModel:
         prediction = []
 
         for inp in data:
-            inp = inp[-maxlen:]
+            inp = inp[-MyModel.maxlen:]
             sentence = inp
             print('\n...Generating with seed: "' + sentence + '"')
             guess = ""
@@ -229,11 +229,19 @@ class MyModel:
 
 
 if __name__ == '__main__':
+    en_url = "https://raw.githubusercontent.com/bellaroseee/447-Group-Project/checkpoint-2/src/Processed_Atels.csv"
+    # rus_url = "https://447groupproject7285.blob.core.windows.net/datasets/largeRussian.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
+    # engl_url = "https://447groupproject7285.blob.core.windows.net/datasets/largeEnglish.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
+    # ch_url = "https://447groupproject7285.blob.core.windows.net/datasets/largeChinese.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
+    # it_url = "https://447groupproject7285.blob.core.windows.net/datasets/largeItalian.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
+    # jp_url = "https://447groupproject7285.blob.core.windows.net/datasets/largeJapanese.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
+    
     parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
     parser.add_argument('mode', choices=('train', 'test', 'dev'), help='what to run')
     parser.add_argument('--work_dir', help='where to save', default='work')
     parser.add_argument('--test_data', help='path to test data', default='./example/input.txt')
     parser.add_argument('--test_output', help='path to write test predictions', default='pred.txt')
+    # parser.add_argument('--lang_train', help='language to train (en_url, rus_url, ch_url, it_url, jp_url)', default='en_url')
     args = parser.parse_args()
 
     random.seed(0)
