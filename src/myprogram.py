@@ -5,11 +5,15 @@ import random
 
 from tensorflow import keras
 from tensorflow.keras import layers
+from tensorflow.keras import metrics
+from tensorflow.keras.callbacks import History
 
 import numpy as np
 import random
 import io
 import pandas as pd
+import pickle
+import matplotlib.pyplot as plt
 
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 
@@ -22,16 +26,18 @@ class MyModel:
     chars = list()
     char_indices = dict()
     indices_char = dict()
-    model = keras.Sequential()
+    model = None
     text = ""
     text_train = ""
+    history = None
 
     # HYPERPARAMETERS
     batch_size = 128
-    epochs = 25
+    epochs = 50
     maxlen = 40
     step = 3
     diversity = 1.0
+    hidden_dim = 108
 
     def __init__(self):
         # Load Data
@@ -48,18 +54,6 @@ class MyModel:
         MyModel.char_indices = dict((c, i) for i, c in enumerate(MyModel.chars))
         MyModel.indices_char = dict((i, c) for i, c in enumerate(MyModel.chars))
 
-        # initialize model
-        MyModel.model = keras.Sequential( # stack layers into tf.keras.Model.
-            [
-                keras.Input(shape=(MyModel.maxlen, len(MyModel.chars))), # input is Keras tensor of shape (40, 180)
-                layers.LSTM(500, return_sequences=True), # 500 is the dimensionality of output space
-                layers.LSTM(500),
-                layers.Dense(len(MyModel.chars), activation="softmax"), # densely connected NN layer with output of dimension 40 & softmax activation function.
-            ], 
-        )
-        optimizer = keras.optimizers.RMSprop(learning_rate=0.01)
-        # optimizer = keras.optimizers.Adam(learning_rate=0.001)
-        MyModel.model.compile(loss="categorical_crossentropy", optimizer=optimizer)
     
     @classmethod
     def load_training_data(cls):
@@ -96,48 +90,72 @@ class MyModel:
         return data
 
     @classmethod
+    def load_dev_data(cls):
+        dev_data = MyModel.data[10:20]
+        text = ""
+        for row in dev_data:
+            text += row
+
+        sentences = []
+        next_chars = []
+        for i in range(0, len(text) - MyModel.maxlen, MyModel.step):
+            sentences.append(text[i : i + MyModel.maxlen])
+            next_chars.append(text[i + MyModel.maxlen])
+
+        x_valid = np.zeros((len(sentences), MyModel.maxlen, len(MyModel.chars)), dtype=np.bool)
+        y_valid = np.zeros((len(sentences), len(MyModel.chars)), dtype=np.bool)
+        for i, sentence in enumerate(sentences):
+            for t, char in enumerate(sentence):
+                x_valid[i, t, MyModel.char_indices[char]] = 1
+            y_valid[i, MyModel.char_indices[next_chars[i]]] = 1
+        
+        return [x_valid, y_valid]
+
+    @classmethod
     def write_pred(cls, preds, fname):
         with open(fname, 'wt') as f:
             for p in preds:
                 f.write('{}\n'.format(p))
 
-    def run_train(self, data, work_dir):
+    def run_train(self, data, validation_data, work_dir):
         x, y = data
+        x_valid, y_valid = validation_data
 
-        for epoch in range(MyModel.epochs):
-            MyModel.model.fit(x, y, batch_size=MyModel.batch_size, epochs=1)
-            print("\nGenerating text after epoch: %d" % epoch)
+        # initialize model
+        MyModel.model = keras.Sequential( # stack layers into tf.keras.Model.
+            [
+                keras.Input(shape=(MyModel.maxlen, len(MyModel.chars))), # input is Keras tensor of shape (40, 180)
+                layers.LSTM(self.hidden_dim, return_sequences=True), # 500 is the dimensionality of output space
+                layers.Dropout(0.2),
+                layers.LSTM(self.hidden_dim, return_sequences=True),
+                layers.Dropout(0.2),
+                layers.LSTM(self.hidden_dim, return_sequences=True),
+                layers.Dropout(0.2),
+                layers.LSTM(self.hidden_dim),
+                layers.Dropout(0.2),
+                layers.Dense(len(MyModel.chars), activation="softmax"), # densely connected NN layer with output of dimension 40 & softmax activation function.
+            ], 
+        )
+        # optimizer = keras.optimizers.RMSprop(learning_rate=0.0001)
+        optimizer = keras.optimizers.Adam(learning_rate=0.001)
+        MyModel.model.compile(loss="categorical_crossentropy", optimizer=optimizer, metrics="accuracy")
 
-            start_index = random.randint(0, len(MyModel.text_train) - MyModel.maxlen - 1)
-            for diversity in [0.2, 0.5, 1.0, 1.2]:
-                test_generated = []
-                topthree = []
-                sentence = MyModel.text_train[start_index : start_index + MyModel.maxlen]
-                print('...Generating with seed: "' + sentence + '"')
+        MyModel.history = MyModel.model.fit(x, y, batch_size=MyModel.batch_size, epochs=MyModel.epochs, validation_data=(x_valid, y_valid))
+        self.display_model(MyModel.history)
+    
+    def display_model(self, history):
+        print(f"printing model history")
+        print(history.history.keys())
 
-                for a in range(3):
-                    generated = ""
-                    for i in range(20):
-                        x_pred = np.zeros((1, MyModel.maxlen, len(MyModel.chars))) # this is 1 row of same dimesion with x
-                        for t, char in enumerate(sentence): 
-                            x_pred[0, t, MyModel.char_indices[char]] = 1.0 # map True value on x_pred based on 'sentence'
-                        preds = MyModel.model.predict(x_pred, verbose=0)[0]
-                        next_index = self.sample(preds, diversity) # calls the sample(preds, temperature) fn above
-                        next_char = MyModel.indices_char[next_index]
-                        if (i == 0): topthree.append(next_char)
-                        sentence = sentence[1:] + next_char
-                        generated += next_char
-                    test_generated.append(generated)
-                print("...Generated: ")
-                print(f"1st: {test_generated[0]}\n2nd: {test_generated[1]}\n3rd: {test_generated[2]}")
-                print("top Three:", topthree)
-                print()
-        
-        # print("Model summary:")
-        # MyModel.model.summary()
-
-        # print("Model weights:")
-        # print(MyModel.model.weights)
+        plt.plot(history.history['accuracy'])
+        plt.plot(history.history['val_accuracy'])
+        plt.title('model accuracy')
+        plt.ylabel('accuracy')
+        plt.xlabel('epoch')
+        plt.legend(['train', 'validation'], loc='upper left')
+        plt.savefig('modelacc.png', dpi=200)
+        plt.show()
+        print('figure saved')
 
     def run_pred(self, data):
         prediction = []
@@ -174,6 +192,8 @@ class MyModel:
             next_chars.append(text[i + MyModel.maxlen])
         print("Number of sequences: ", len(sentences))
 
+        f = open("dev result.txt", "a")
+
         num_correct = 0
         # then run_pred on it
         for i in range(len(sentences)):
@@ -195,7 +215,16 @@ class MyModel:
                 print(f"...Generated with diversity {MyModel.diversity}: {guess}")
                 print(f"correct next char: '{next_chars[i]}'")
 
+                f.write('\n...Generating with seed: "' + sentence + '"\n')
+                f.write(f"...Generated with diversity {MyModel.diversity}: {guess}\n")
+                f.write(f"correct next char: '{next_chars[i]}\n'")
+
         print(f"{num_correct} correct guesses out of {len(sentences)}")
+        print(f"Accuracy of this model is {num_correct / len(sentences) * 100} percent")
+
+        f.write(f"{num_correct} correct guesses out of {len(sentences)}\n")
+        f.write(f"Accuracy of this model is {num_correct / len(sentences) * 100} percent")
+        f.close()
 
     def sample(self, preds, temperature=1.0):
         # helper function to sample an index from a probability array
@@ -209,20 +238,14 @@ class MyModel:
     def save(self, work_dir):
         model = MyModel.model
         model.save(work_dir)
-        print("Saving model...")
-        print("Verify saving model")
-        reconstructed_model = keras.models.load_model(work_dir)
-        train_data_x , train_data_y = MyModel.load_training_data()
-        np.testing.assert_allclose(
-            model.predict(train_data_x), reconstructed_model.predict(train_data_x)
-        )
-        model.summary()
+        print("model saved")
 
     @classmethod
     def load(cls, work_dir):
         model = keras.models.load_model(work_dir)
         MyModel.model = model
         MyModel.model.summary()
+        # print(MyModel.history.keys())
         return MyModel()
 
 
@@ -253,8 +276,10 @@ if __name__ == '__main__':
         model = MyModel()
         print('Loading training data')
         train_data = MyModel.load_training_data()
+        print('Loading dev data')
+        dev_data = MyModel.load_dev_data()
         print('Training')
-        model.run_train(train_data, args.work_dir)
+        model.run_train(train_data, dev_data, args.work_dir)
         print('Saving model')
         model.save(args.work_dir)
     elif args.mode == 'dev':
