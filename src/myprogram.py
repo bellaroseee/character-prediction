@@ -6,6 +6,7 @@ import random
 from tensorflow import keras
 from tensorflow.keras import layers
 from tensorflow.keras import metrics
+from tensorflow.keras import regularizers
 from tensorflow.keras.callbacks import History
 
 import numpy as np
@@ -19,9 +20,6 @@ from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 
 
 class MyModel:
-    """
-    This is a starter model to get you started. Feel free to modify this file.
-    """
     data = []
     chars = list()
     char_indices = dict()
@@ -30,22 +28,27 @@ class MyModel:
     text = ""
     text_train = ""
     history = None
+    random.seed(500)
 
     # HYPERPARAMETERS
-    batch_size = 128
+    batch_size = 200
     epochs = 50
-    maxlen = 40
+    maxlen = 20
     step = 3
-    diversity = 1.0
-    hidden_dim = 108
+    diversity = 1.5
+    hidden_dim = 300
+    learning_rate = 0.001
+    l1_reg = 1e-4
+    l2_reg = 1e-5
+    dropout = 0.2
 
     def __init__(self):
-        # Load Data
+        # Load data
         path_to_file = keras.utils.get_file("dataset", "https://raw.githubusercontent.com/bellaroseee/447-Group-Project/checkpoint-2/src/Processed_Atels.csv")
         data = pd.read_csv(path_to_file)
         MyModel.data = data["Text processed"]
 
-        # create dictionary
+        # create chars, char_indices and indices_char
         text = ""
         for row in MyModel.data:
             text += row
@@ -66,8 +69,9 @@ class MyModel:
         sentences = []
         next_chars = []
         for i in range(0, len(text) - MyModel.maxlen, MyModel.step):
-            sentences.append(text[i : i + MyModel.maxlen])
-            next_chars.append(text[i + MyModel.maxlen])
+            temp_len = random.randint(0, MyModel.maxlen)
+            sentences.append(text[i : i + temp_len])
+            next_chars.append(text[i + temp_len])
 
         x = np.zeros((len(sentences), MyModel.maxlen, len(MyModel.chars)), dtype=np.bool)
         y = np.zeros((len(sentences), len(MyModel.chars)), dtype=np.bool)
@@ -76,6 +80,7 @@ class MyModel:
                 x[i, t, MyModel.char_indices[char]] = 1
             y[i, MyModel.char_indices[next_chars[i]]] = 1
 
+        # print(f"{sentences[0]}\n{next_chars[0]}\n{x[0]}\n{y[0]}")
         return [x, y]
 
     @classmethod
@@ -125,19 +130,20 @@ class MyModel:
         MyModel.model = keras.Sequential( # stack layers into tf.keras.Model.
             [
                 keras.Input(shape=(MyModel.maxlen, len(MyModel.chars))), # input is Keras tensor of shape (40, 180)
-                layers.LSTM(self.hidden_dim, return_sequences=True), # 500 is the dimensionality of output space
-                layers.Dropout(0.2),
-                layers.LSTM(self.hidden_dim, return_sequences=True),
-                layers.Dropout(0.2),
-                layers.LSTM(self.hidden_dim, return_sequences=True),
-                layers.Dropout(0.2),
-                layers.LSTM(self.hidden_dim),
-                layers.Dropout(0.2),
+                layers.LSTM(MyModel.hidden_dim, return_sequences=True, kernel_regularizer=regularizers.l1(MyModel.l1_reg)), # 500 is the dimensionality of output space
+                layers.BatchNormalization(),
+                layers.Dropout(MyModel.dropout),
+                layers.LSTM(MyModel.hidden_dim, return_sequences=True, kernel_regularizer=regularizers.l2(MyModel.l2_reg)),
+                layers.Dropout(MyModel.dropout),
+                layers.LSTM(MyModel.hidden_dim, return_sequences=True, kernel_regularizer=regularizers.l1(MyModel.l1_reg)),
+                layers.Dropout(MyModel.dropout),
+                layers.LSTM(MyModel.hidden_dim, kernel_regularizer=regularizers.l2(MyModel.l2_reg)),
+                layers.Dropout(MyModel.dropout),
                 layers.Dense(len(MyModel.chars), activation="softmax"), # densely connected NN layer with output of dimension 40 & softmax activation function.
             ], 
         )
         # optimizer = keras.optimizers.RMSprop(learning_rate=0.0001)
-        optimizer = keras.optimizers.Adam(learning_rate=0.001)
+        optimizer = keras.optimizers.Adam(learning_rate=MyModel.learning_rate)
         MyModel.model.compile(loss="categorical_crossentropy", optimizer=optimizer, metrics="accuracy")
 
         MyModel.history = MyModel.model.fit(x, y, batch_size=MyModel.batch_size, epochs=MyModel.epochs, validation_data=(x_valid, y_valid))
