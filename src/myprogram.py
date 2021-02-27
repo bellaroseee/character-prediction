@@ -364,7 +364,7 @@ if __name__ == '__main__':
         model.save(args.work_dir)
     elif args.mode == 'dev':
         print('Loading model')
-        model = MyModel.load(args.work_dir)
+        model = MyModel.load(args.lang_train, args.work_dir)
         print('Run prediction on dev data')
         model.run_dev()
     elif args.mode == 'test':
