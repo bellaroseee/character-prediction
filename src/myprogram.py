@@ -43,16 +43,54 @@ class MyModel:
     l2_reg = 1e-5
     dropout = 0.2
 
-    def __init__(self):
-        # Load data
-        path_to_file = keras.utils.get_file("dataset", "https://raw.githubusercontent.com/bellaroseee/447-Group-Project/checkpoint-2/src/Processed_Atels.csv")
-        data = pd.read_csv(path_to_file)
-        MyModel.data = data["Text processed"]
+    def __init__(self, lang):
+        # languages url
+        ast_url ="https://447groupproject7285.blob.core.windows.net/datasets/finalprocessedatels.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
+        en_url = "https://447groupproject7285.blob.core.windows.net/datasets/finalEnglishParse.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
+        rus_url = "https://447groupproject7285.blob.core.windows.net/datasets/finalRussianParse.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
+        ch_url = "https://447groupproject7285.blob.core.windows.net/datasets/finalChineseParse.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
+        it_url = "https://447groupproject7285.blob.core.windows.net/datasets/finalItalianParse.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
+        jp_url = "https://447groupproject7285.blob.core.windows.net/datasets/finalJapaneseParse.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
+        
+        ast_fname = "finalprocessedatels"
+        en_fname = "finalEnglishParse" 
+        rus_fname = "finalRussianParse"
+        ch_fname = "finalChineseParse"
+        it_fname = "finalItalianParse"
+        jp_fname = "finalJapaneseParse"
+
+        url = ""
+        fname = ""
+        if (lang == "jp"):
+            url = jp_url
+            fname = jp_fname
+        elif (lang == "rus"):
+            url = rus_url
+            fname = rus_fname
+        elif (lang == "ch"):
+            url = ch_url
+            fname = ch_fname
+        elif (lang == "it"):
+            url = it_url
+            fname = it_fname
+        
+        if (lang == "en"):
+            path_to_file1 = keras.utils.get_file(ast_fname, ast_url)
+            path_to_file2 = keras.utils.get_file(en_fname, en_url)
+            data1 = pd.read_csv(path_to_file1)
+            data2 = pd.read_csv(path_to_file2, nrows=150000)
+            data = data1.merge(data2, on=["Text processed"], how="outer")
+            MyModel.data = data["Text processed"]
+        else :
+            # Load data
+            path_to_file = keras.utils.get_file(fname, url)
+            data = pd.read_csv(path_to_file, nrows=150000)
+            MyModel.data = data["Text processed"]
 
         # create chars, char_indices and indices_char
         text = ""
         for row in MyModel.data:
-            text += row
+            text += str(row)
         MyModel.text = text
         # add UNK character to list of characters
         toBeChars = sorted(list(set(text)))
@@ -169,14 +207,16 @@ class MyModel:
         MyModel.model = keras.Sequential( # stack layers into tf.keras.Model.
             [
                 keras.Input(shape=(MyModel.maxlen, len(MyModel.chars))), # input is Keras tensor of shape (40, 180)
-                layers.LSTM(MyModel.hidden_dim, return_sequences=True, kernel_regularizer=regularizers.l1(MyModel.l1_reg)), # 500 is the dimensionality of output space
+                layers.LSTM(MyModel.hidden_dim, return_sequences=True, kernel_regularizer=regularizers.l2(MyModel.l2_reg)), # 500 is the dimensionality of output space
+                layers.BatchNormalization(),
+                layers.Dropout(MyModel.dropout),
+                layers.LSTM(MyModel.hidden_dim, return_sequences=True, kernel_regularizer=regularizers.l2(MyModel.l2_reg)),
                 layers.BatchNormalization(),
                 layers.Dropout(MyModel.dropout),
                 layers.LSTM(MyModel.hidden_dim, return_sequences=True, kernel_regularizer=regularizers.l2(MyModel.l2_reg)),
                 layers.Dropout(MyModel.dropout),
-                layers.LSTM(MyModel.hidden_dim, return_sequences=True, kernel_regularizer=regularizers.l1(MyModel.l1_reg)),
-                layers.Dropout(MyModel.dropout),
                 layers.LSTM(MyModel.hidden_dim, kernel_regularizer=regularizers.l2(MyModel.l2_reg)),
+                layers.BatchNormalization(),
                 layers.Dropout(MyModel.dropout),
                 layers.Dense(len(MyModel.chars), activation="softmax"), # densely connected NN layer with output of dimension 40 & softmax activation function.
             ], 
@@ -287,39 +327,33 @@ class MyModel:
         print("model saved")
 
     @classmethod
-    def load(cls, work_dir):
+    def load(cls, lang, work_dir):
         model = keras.models.load_model(work_dir)
         MyModel.model = model
         MyModel.model.summary()
-        # print(MyModel.history.keys())
-        return MyModel()
+        return MyModel(lang)
 
 
 if __name__ == '__main__':
-    en_url = "https://raw.githubusercontent.com/bellaroseee/447-Group-Project/checkpoint-2/src/Processed_Atels.csv"
-    # rus_url = "https://447groupproject7285.blob.core.windows.net/datasets/finalRussianParse.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
-    # engl_url = "https://447groupproject7285.blob.core.windows.net/datasets/finalEnglishParse.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
-    # ch_url = "https://447groupproject7285.blob.core.windows.net/datasets/finalChineseParse.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
-    # it_url = "https://447groupproject7285.blob.core.windows.net/datasets/finalItalianParse.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
-    # jp_url = "https://447groupproject7285.blob.core.windows.net/datasets/finalJapaneseParse.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
     
     parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
     parser.add_argument('mode', choices=('train', 'test', 'dev'), help='what to run')
     parser.add_argument('--work_dir', help='where to save', default='work')
     parser.add_argument('--test_data', help='path to test data', default='./example/input.txt')
     parser.add_argument('--test_output', help='path to write test predictions', default='pred.txt')
-    # parser.add_argument('--lang_train', help='language to train (en_url, rus_url, ch_url, it_url, jp_url)', default='en_url')
+    parser.add_argument('--lang_train', help='language to train (en, rus, ch, it, jp)', default='en_url')
     args = parser.parse_args()
 
     
-    random.seed(0)
+    # random.seed(0)
 
     if args.mode == 'train':
         if not os.path.isdir(args.work_dir):
             print('Making working directory {}'.format(args.work_dir))
-            os.makedirs(args.work_dir)
+            dir_name = "./work/" + args.work_dir
+            os.makedirs(dir_name)
         print('Instatiating model')
-        model = MyModel()
+        model = MyModel(args.lang_train)
         print('Loading training data')
         train_data = MyModel.load_training_data()
         print('Loading dev data')
