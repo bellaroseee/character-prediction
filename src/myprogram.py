@@ -28,6 +28,7 @@ class MyModel:
     text = ""
     text_train = ""
     history = None
+    unk = ""
     random.seed(500)
 
     # HYPERPARAMETERS
@@ -53,17 +54,47 @@ class MyModel:
         for row in MyModel.data:
             text += row
         MyModel.text = text
-        MyModel.chars = sorted(list(set(text)))
+        # add UNK character to list of characters
+        toBeChars = sorted(list(set(text)))
+        MyModel.unk = u"\u263C"
+        toBeChars.append(MyModel.unk)
+        MyModel.chars = toBeChars
         MyModel.char_indices = dict((c, i) for i, c in enumerate(MyModel.chars))
         MyModel.indices_char = dict((i, c) for i, c in enumerate(MyModel.chars))
-
+        
+    @classmethod
+    def toUnk(self, data):
+        not_unked_data = data
+        charCount = {}
+        for row in not_unked_data:
+            chars = list(str(row))
+            for char in chars:
+                if char in charCount:
+                    charCount[char] += 1
+                else:
+                    charCount[char] = 1
+        # grab two least used characters
+        sort_orders = sorted(charCount.items(), key=lambda x: x[1])
+        key1 = sort_orders[0]
+        key2 = sort_orders[1]
+        
+        #add data with characters replaced with UNK to return value
+        newData = ""
+        for row in not_unked_data:
+          chars = list(str(row))
+          for char in chars:
+            if char == key1 or char == key2:
+              newData += MyModel.unk
+            else:
+              newData += char
+        return newData
     
     @classmethod
     def load_training_data(cls):
-        train_data = MyModel.data[20:]
+        train_data = MyModel.toUnk(MyModel.data[20:])
         text = ""
         for row in train_data:
-            text += row
+            text += str(row)
         MyModel.text_train = text
 
         sentences = []
@@ -88,7 +119,15 @@ class MyModel:
         data = []
         with open(fname) as f:
             for line in f:
-                inp = line[:-1]  # the last character is a newline
+                line = str(line)
+                line_chars = list(line)
+                newLine = ""
+                for char in line_chars:
+                  if char in MyModel.chars:
+                    newLine += char
+                  else:
+                    newLine += MyModel.unk
+                inp = newLine[:-1]  # the last character is a newline
                 data.append(inp)
         # this is for creating test data from data source
         # test_data = MyModel.data[:10]
@@ -96,10 +135,10 @@ class MyModel:
 
     @classmethod
     def load_dev_data(cls):
-        dev_data = MyModel.data[10:20]
+        dev_data = MyModel.toUnk(MyModel.data[10:20])
         text = ""
         for row in dev_data:
-            text += row
+            text += str(row)
 
         sentences = []
         next_chars = []
@@ -178,7 +217,8 @@ class MyModel:
                 preds = MyModel.model.predict(x_pred, verbose=0)[0]
                 next_index = self.sample(preds, MyModel.diversity)
                 next_char = MyModel.indices_char[next_index]
-                guess += next_char
+                if next_char is not MyModel.unk:
+                    guess += next_char
             print(f"...Generated with diversity {MyModel.diversity}: {guess}")
             prediction.append(''.join(guess))
 
