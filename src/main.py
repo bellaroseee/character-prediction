@@ -2,7 +2,7 @@ from langdetect import DetectorFactory
 DetectorFactory.seed = 0
 from langdetect import detect
 
-# from myprogram import MyModel
+from myprogram import MyModel
 from languageDetection import LanguageDetection
 
 from os import listdir
@@ -16,8 +16,7 @@ languagesList = ["en", "ru", "ja", "ch", "it"]
 workdir = ["en_work", "ru_work", "ja_work", "ch_work", "it_work"]
 i = 0
 for lang in languagesList:
-  languageToLanguageModel[lang] = MyModel()
-  languageToLanguageModel[lang].load(lang, work_dir="work/" + workdir[i])
+  languageToLanguageModel[lang] = MyModel.load(lang, work_dir="work/" + workdir[i])
   i += 1
 
 # # create dictionaries for language translation
@@ -53,6 +52,8 @@ if __name__=="__main__":
 
   f = open(args.test_data, "r")
 
+  predList = []
+
   # default language is english
   language = "en"
   languageDetection = LanguageDetection()
@@ -69,12 +70,12 @@ if __name__=="__main__":
     # use the language model to predict the characters
     # ...
     print("Predicting results...")
-    pred = currLanguageModel.run_pred(data=sentence)
+    pred = currLanguageModel.run_pred(data=np.array([sentence]))
 
-    assert len(pred) == len(test_data), 'Expected {} predictions but got {}'.format(len(test_data), len(pred))
-    model.write_pred(pred, args.test_output)
+    predList.append(pred[0])
 
 
+  languageToLanguageModel["en"].write_pred(predList, args.test_output)
 
 
   f.close()
