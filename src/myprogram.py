@@ -47,14 +47,14 @@ class MyModel:
         # languages url
         ast_url ="https://447groupproject7285.blob.core.windows.net/datasets/finalprocessedatels.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
         en_url = "https://447groupproject7285.blob.core.windows.net/datasets/finalEnglishParse.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
-        rus_url = "https://447groupproject7285.blob.core.windows.net/datasets/finalRussianParse.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
+        ru_url = "https://447groupproject7285.blob.core.windows.net/datasets/finalRussianParse.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
         ch_url = "https://447groupproject7285.blob.core.windows.net/datasets/finalChineseParse.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
         it_url = "https://447groupproject7285.blob.core.windows.net/datasets/finalItalianParse.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
         jp_url = "https://447groupproject7285.blob.core.windows.net/datasets/finalJapaneseParse.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
         
         ast_fname = "finalprocessedatels"
         en_fname = "finalEnglishParse" 
-        rus_fname = "finalRussianParse"
+        ru_fname = "finalRussianParse"
         ch_fname = "finalChineseParse"
         it_fname = "finalItalianParse"
         jp_fname = "finalJapaneseParse"
@@ -64,9 +64,9 @@ class MyModel:
         if (lang == "jp"):
             url = jp_url
             fname = jp_fname
-        elif (lang == "rus"):
-            url = rus_url
-            fname = rus_fname
+        elif (lang == "ru"):
+            url = ru_url
+            fname = ru_fname
         elif (lang == "ch"):
             url = ch_url
             fname = ch_fname
@@ -341,16 +341,16 @@ if __name__ == '__main__':
     parser.add_argument('--work_dir', help='where to save', default='work')
     parser.add_argument('--test_data', help='path to test data', default='./example/input.txt')
     parser.add_argument('--test_output', help='path to write test predictions', default='pred.txt')
-    parser.add_argument('--lang_train', help='language to train (en, rus, ch, it, jp)', default='en_url')
+    parser.add_argument('--lang_train', help='language to train (en, ru, ch, it, jp)', default='en_url')
     args = parser.parse_args()
 
     
     # random.seed(0)
 
     if args.mode == 'train':
-        if not os.path.isdir(args.work_dir):
+        dir_name = "./work/" + args.work_dir
+        if not os.path.isdir(dir_name):
             print('Making working directory {}'.format(args.work_dir))
-            dir_name = "./work/" + args.work_dir
             os.makedirs(dir_name)
         print('Instatiating model')
         model = MyModel(args.lang_train)
