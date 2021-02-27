@@ -18,6 +18,13 @@ import matplotlib.pyplot as plt
 
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 
+from langdetect import DetectorFactory
+DetectorFactory.seed = 0
+from langdetect import detect
+from languageDetection import LanguageDetection
+from os import listdir
+from os.path import isfile, join
+
 
 class MyModel:
     data = []
@@ -337,10 +344,10 @@ class MyModel:
 if __name__ == '__main__':
 
     parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
-    parser.add_argument('mode', choices=('train', 'test', 'dev'), help='what to run')
+    parser.add_argument('mode', choices=('train', 'test', 'dev', 'test-all'), help='what to run')
     parser.add_argument('--work_dir', help='where to save', default='work')
     parser.add_argument('--test_data', help='path to test data', default='./example/input.txt')
-    .add_argument('--test_output', help='path to write test predicparsertions', default='pred.txt')
+    parser.add_argument('--test_output', help='path to write test predicparsertions', default='pred.txt')
     parser.add_argument('--lang_train', help='language to train (en, ru, ch, it, ja)', default='en_url')
     args = parser.parse_args()
 
@@ -349,9 +356,9 @@ if __name__ == '__main__':
 
     if args.mode == 'train':
         dir_name = "./work/" + args.work_dir
-        if not os.path.isdir(dir_name):
+        if not os.path.isdir(args.work_dir):
             print('Making working directory {}'.format(args.work_dir))
-            os.makedirs(dir_name)
+            os.makedirs(args.work_dir)
         print('Instatiating model')
         model = MyModel(args.lang_train)
         print('Loading training data')
@@ -369,7 +376,7 @@ if __name__ == '__main__':
         model.run_dev()
     elif args.mode == 'test':
         print('Loading model')
-        model = MyModel.load(args.work_dir)
+        model = MyModel.load(args.lang_train, args.work_dir)
         print('Loading test data from {}'.format(args.test_data))
         test_data = MyModel.load_test_data(args.test_data)
         print('Making predictions')
@@ -377,5 +384,18 @@ if __name__ == '__main__':
         print('Writing predictions to {}'.format(args.test_output))
         assert len(pred) == len(test_data), 'Expected {} predictions but got {}'.format(len(test_data), len(pred))
         model.write_pred(pred, args.test_output)
+    # elif args.mode = 'test-all':
+    #     print("Load all model")
+    #     languageToLanguageModel = {}
+    #     languagesList = ["en", "ru", "ja", "ch", "it"]
+    #     workdir = ["en_work", "ru_work", "ja_work", "ch_work", "it_work"]
+    #     i = 0
+    #     for lang in languagesList:
+    #         languageToLanguageModel[lang] = MyModel.load(lang, work_dir="work/" + workdir[i])
+    #         i += 1
+    #     print("finish loading all models")
+
+    #     f = open(args.test_data, "r")
+    #     f
     else:
         raise NotImplementedError('Unknown mode {}'.format(args.mode))
