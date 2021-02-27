@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -e
 set -v
-python src/main.py --test_data $1 --test_output $2
+python src/myprogram.py test --work_dir work/en_work --test_data $1 --test_output $2 --lang_train "en"
