@@ -78,7 +78,7 @@ class MyModel:
             path_to_file1 = keras.utils.get_file(ast_fname, ast_url)
             path_to_file2 = keras.utils.get_file(en_fname, en_url)
             data1 = pd.read_csv(path_to_file1)
-            data2 = pd.read_csv(path_to_file2)
+            data2 = pd.read_csv(path_to_file2, nrows=150000)
             data = data1.merge(data2, on=["Text processed"], how="outer")
             MyModel.data = data["Text processed"]
         else :
