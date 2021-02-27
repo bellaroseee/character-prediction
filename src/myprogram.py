@@ -169,14 +169,16 @@ class MyModel:
         MyModel.model = keras.Sequential( # stack layers into tf.keras.Model.
             [
                 keras.Input(shape=(MyModel.maxlen, len(MyModel.chars))), # input is Keras tensor of shape (40, 180)
-                layers.LSTM(MyModel.hidden_dim, return_sequences=True, kernel_regularizer=regularizers.l1(MyModel.l1_reg)), # 500 is the dimensionality of output space
+                layers.LSTM(MyModel.hidden_dim, return_sequences=True, kernel_regularizer=regularizers.l2(MyModel.l2_reg)), # 500 is the dimensionality of output space
+                layers.BatchNormalization(),
+                layers.Dropout(MyModel.dropout),
+                layers.LSTM(MyModel.hidden_dim, return_sequences=True, kernel_regularizer=regularizers.l2(MyModel.l2_reg)),
                 layers.BatchNormalization(),
                 layers.Dropout(MyModel.dropout),
                 layers.LSTM(MyModel.hidden_dim, return_sequences=True, kernel_regularizer=regularizers.l2(MyModel.l2_reg)),
                 layers.Dropout(MyModel.dropout),
-                layers.LSTM(MyModel.hidden_dim, return_sequences=True, kernel_regularizer=regularizers.l1(MyModel.l1_reg)),
-                layers.Dropout(MyModel.dropout),
                 layers.LSTM(MyModel.hidden_dim, kernel_regularizer=regularizers.l2(MyModel.l2_reg)),
+                layers.BatchNormalization(),
                 layers.Dropout(MyModel.dropout),
                 layers.Dense(len(MyModel.chars), activation="softmax"), # densely connected NN layer with output of dimension 40 & softmax activation function.
             ], 
