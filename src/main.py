@@ -8,6 +8,9 @@ from languageDetection import LanguageDetection
 from os import listdir
 from os.path import isfile, join
 
+from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
+import numpy as np
+
 print("Loading language models...")
 # languageToLanguageModel maps each language to its language model
 languageToLanguageModel = {}
@@ -43,11 +46,8 @@ for lang in languagesList:
 
 if __name__=="__main__":
   parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
-  parser.add_argument('mode', choices=('train', 'test', 'dev'), help='what to run')
-  parser.add_argument('--work_dir', help='where to save', default='work')
   parser.add_argument('--test_data', help='path to test data', default='./example/input.txt')
   parser.add_argument('--test_output', help='path to write test predictions', default='pred.txt')
-  parser.add_argument('--lang_train', help='language to train (en, ru, ch, it, ja)', default='en_url')
   args = parser.parse_args()
 
   f = open(args.test_data, "r")
@@ -64,6 +64,7 @@ if __name__=="__main__":
     if (language not in set_of_covered_languages): # default to english if language is not one of the main languages
       language = "en"
 
+    print("language: " + language)
     # get the language model
     currLanguageModel = languageToLanguageModel[language]
 
