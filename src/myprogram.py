@@ -5,75 +5,104 @@ import random
 
 from tensorflow import keras
 from tensorflow.keras import layers
+from tensorflow.keras import metrics
+from tensorflow.keras import regularizers
+from tensorflow.keras.callbacks import History
 
 import numpy as np
 import random
 import io
 import pandas as pd
+import pickle
+import matplotlib.pyplot as plt
 
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 
 
 class MyModel:
-    """
-    This is a starter model to get you started. Feel free to modify this file.
-    """
     data = []
     chars = list()
     char_indices = dict()
     indices_char = dict()
-    model = keras.Sequential()
+    model = None
     text = ""
     text_train = ""
+    history = None
+    unk = ""
+    random.seed(500)
 
     # HYPERPARAMETERS
-    batch_size = 128
-    epochs = 25
-    maxlen = 40
+    batch_size = 200
+    epochs = 50
+    maxlen = 20
     step = 3
-    diversity = 1.0
+    diversity = 1.5
+    hidden_dim = 300
+    learning_rate = 0.001
+    l1_reg = 1e-4
+    l2_reg = 1e-5
+    dropout = 0.2
 
-    def __init__(self, url):
-        # Load Data
-        path_to_file = keras.utils.get_file("dataset", url)
+    def __init__(self):
+        # Load data
+        path_to_file = keras.utils.get_file("dataset", "https://raw.githubusercontent.com/bellaroseee/447-Group-Project/checkpoint-2/src/Processed_Atels.csv")
         data = pd.read_csv(path_to_file)
         MyModel.data = data["Text processed"]
 
-        # create dictionary
+        # create chars, char_indices and indices_char
         text = ""
         for row in MyModel.data:
             text += row
         MyModel.text = text
-        MyModel.chars = sorted(list(set(text)))
+        # add UNK character to list of characters
+        toBeChars = sorted(list(set(text)))
+        MyModel.unk = u"\u263C"
+        toBeChars.append(MyModel.unk)
+        MyModel.chars = toBeChars
         MyModel.char_indices = dict((c, i) for i, c in enumerate(MyModel.chars))
         MyModel.indices_char = dict((i, c) for i, c in enumerate(MyModel.chars))
-
-        # initialize model
-        MyModel.model = keras.Sequential( # stack layers into tf.keras.Model.
-            [
-                keras.Input(shape=(MyModel.maxlen, len(MyModel.chars))), # input is Keras tensor of shape (40, 180)
-                layers.LSTM(500, return_sequences=True), # 500 is the dimensionality of output space
-                layers.LSTM(500),
-                layers.Dense(len(MyModel.chars), activation="softmax"), # densely connected NN layer with output of dimension 40 & softmax activation function.
-            ], 
-        )
-        optimizer = keras.optimizers.RMSprop(learning_rate=0.01)
-        # optimizer = keras.optimizers.Adam(learning_rate=0.001)
-        MyModel.model.compile(loss="categorical_crossentropy", optimizer=optimizer)
+        
+    @classmethod
+    def toUnk(self, data):
+        not_unked_data = data
+        charCount = {}
+        for row in not_unked_data:
+            chars = list(str(row))
+            for char in chars:
+                if char in charCount:
+                    charCount[char] += 1
+                else:
+                    charCount[char] = 1
+        # grab two least used characters
+        sort_orders = sorted(charCount.items(), key=lambda x: x[1])
+        key1 = sort_orders[0]
+        key2 = sort_orders[1]
+        
+        #add data with characters replaced with UNK to return value
+        newData = ""
+        for row in not_unked_data:
+          chars = list(str(row))
+          for char in chars:
+            if char == key1 or char == key2:
+              newData += MyModel.unk
+            else:
+              newData += char
+        return newData
     
     @classmethod
     def load_training_data(cls):
-        train_data = MyModel.data[20:]
+        train_data = MyModel.toUnk(MyModel.data[20:])
         text = ""
         for row in train_data:
-            text += row
+            text += str(row)
         MyModel.text_train = text
 
         sentences = []
         next_chars = []
         for i in range(0, len(text) - MyModel.maxlen, MyModel.step):
-            sentences.append(text[i : i + MyModel.maxlen])
-            next_chars.append(text[i + MyModel.maxlen])
+            temp_len = random.randint(0, MyModel.maxlen)
+            sentences.append(text[i : i + temp_len])
+            next_chars.append(text[i + temp_len])
 
         x = np.zeros((len(sentences), MyModel.maxlen, len(MyModel.chars)), dtype=np.bool)
         y = np.zeros((len(sentences), len(MyModel.chars)), dtype=np.bool)
@@ -82,6 +111,7 @@ class MyModel:
                 x[i, t, MyModel.char_indices[char]] = 1
             y[i, MyModel.char_indices[next_chars[i]]] = 1
 
+        # print(f"{sentences[0]}\n{next_chars[0]}\n{x[0]}\n{y[0]}")
         return [x, y]
 
     @classmethod
@@ -89,11 +119,41 @@ class MyModel:
         data = []
         with open(fname) as f:
             for line in f:
-                inp = line[:-1]  # the last character is a newline
+                line = str(line)
+                line_chars = list(line)
+                newLine = ""
+                for char in line_chars:
+                  if char in MyModel.chars:
+                    newLine += char
+                  else:
+                    newLine += MyModel.unk
+                inp = newLine[:-1]  # the last character is a newline
                 data.append(inp)
         # this is for creating test data from data source
         # test_data = MyModel.data[:10]
         return data
+
+    @classmethod
+    def load_dev_data(cls):
+        dev_data = MyModel.toUnk(MyModel.data[10:20])
+        text = ""
+        for row in dev_data:
+            text += str(row)
+
+        sentences = []
+        next_chars = []
+        for i in range(0, len(text) - MyModel.maxlen, MyModel.step):
+            sentences.append(text[i : i + MyModel.maxlen])
+            next_chars.append(text[i + MyModel.maxlen])
+
+        x_valid = np.zeros((len(sentences), MyModel.maxlen, len(MyModel.chars)), dtype=np.bool)
+        y_valid = np.zeros((len(sentences), len(MyModel.chars)), dtype=np.bool)
+        for i, sentence in enumerate(sentences):
+            for t, char in enumerate(sentence):
+                x_valid[i, t, MyModel.char_indices[char]] = 1
+            y_valid[i, MyModel.char_indices[next_chars[i]]] = 1
+        
+        return [x_valid, y_valid]
 
     @classmethod
     def write_pred(cls, preds, fname):
@@ -101,43 +161,46 @@ class MyModel:
             for p in preds:
                 f.write('{}\n'.format(p))
 
-    def run_train(self, data, work_dir):
+    def run_train(self, data, validation_data, work_dir):
         x, y = data
+        x_valid, y_valid = validation_data
 
-        for epoch in range(MyModel.epochs):
-            MyModel.model.fit(x, y, batch_size=MyModel.batch_size, epochs=1)
-            print("\nGenerating text after epoch: %d" % epoch)
+        # initialize model
+        MyModel.model = keras.Sequential( # stack layers into tf.keras.Model.
+            [
+                keras.Input(shape=(MyModel.maxlen, len(MyModel.chars))), # input is Keras tensor of shape (40, 180)
+                layers.LSTM(MyModel.hidden_dim, return_sequences=True, kernel_regularizer=regularizers.l1(MyModel.l1_reg)), # 500 is the dimensionality of output space
+                layers.BatchNormalization(),
+                layers.Dropout(MyModel.dropout),
+                layers.LSTM(MyModel.hidden_dim, return_sequences=True, kernel_regularizer=regularizers.l2(MyModel.l2_reg)),
+                layers.Dropout(MyModel.dropout),
+                layers.LSTM(MyModel.hidden_dim, return_sequences=True, kernel_regularizer=regularizers.l1(MyModel.l1_reg)),
+                layers.Dropout(MyModel.dropout),
+                layers.LSTM(MyModel.hidden_dim, kernel_regularizer=regularizers.l2(MyModel.l2_reg)),
+                layers.Dropout(MyModel.dropout),
+                layers.Dense(len(MyModel.chars), activation="softmax"), # densely connected NN layer with output of dimension 40 & softmax activation function.
+            ], 
+        )
+        # optimizer = keras.optimizers.RMSprop(learning_rate=0.0001)
+        optimizer = keras.optimizers.Adam(learning_rate=MyModel.learning_rate)
+        MyModel.model.compile(loss="categorical_crossentropy", optimizer=optimizer, metrics="accuracy")
 
-            start_index = random.randint(0, len(MyModel.text_train) - MyModel.maxlen - 1)
-            for diversity in [0.2, 0.5, 1.0, 1.2]:
-                test_generated = []
-                topthree = []
-                sentence = MyModel.text_train[start_index : start_index + MyModel.maxlen]
-                print('...Generating with seed: "' + sentence + '"')
+        MyModel.history = MyModel.model.fit(x, y, batch_size=MyModel.batch_size, epochs=MyModel.epochs, validation_data=(x_valid, y_valid))
+        self.display_model(MyModel.history)
+    
+    def display_model(self, history):
+        print(f"printing model history")
+        print(history.history.keys())
 
-                for a in range(3):
-                    generated = ""
-                    for i in range(20):
-                        x_pred = np.zeros((1, MyModel.maxlen, len(MyModel.chars))) # this is 1 row of same dimesion with x
-                        for t, char in enumerate(sentence): 
-                            x_pred[0, t, MyModel.char_indices[char]] = 1.0 # map True value on x_pred based on 'sentence'
-                        preds = MyModel.model.predict(x_pred, verbose=0)[0]
-                        next_index = self.sample(preds, diversity) # calls the sample(preds, temperature) fn above
-                        next_char = MyModel.indices_char[next_index]
-                        if (i == 0): topthree.append(next_char)
-                        sentence = sentence[1:] + next_char
-                        generated += next_char
-                    test_generated.append(generated)
-                print("...Generated: ")
-                print(f"1st: {test_generated[0]}\n2nd: {test_generated[1]}\n3rd: {test_generated[2]}")
-                print("top Three:", topthree)
-                print()
-        
-        # print("Model summary:")
-        # MyModel.model.summary()
-
-        # print("Model weights:")
-        # print(MyModel.model.weights)
+        plt.plot(history.history['accuracy'])
+        plt.plot(history.history['val_accuracy'])
+        plt.title('model accuracy')
+        plt.ylabel('accuracy')
+        plt.xlabel('epoch')
+        plt.legend(['train', 'validation'], loc='upper left')
+        plt.savefig('modelacc.png', dpi=200)
+        plt.show()
+        print('figure saved')
 
     def run_pred(self, data):
         prediction = []
@@ -154,7 +217,8 @@ class MyModel:
                 preds = MyModel.model.predict(x_pred, verbose=0)[0]
                 next_index = self.sample(preds, MyModel.diversity)
                 next_char = MyModel.indices_char[next_index]
-                guess += next_char
+                if next_char is not MyModel.unk:
+                    guess += next_char
             print(f"...Generated with diversity {MyModel.diversity}: {guess}")
             prediction.append(''.join(guess))
 
@@ -173,6 +237,8 @@ class MyModel:
             sentences.append(text[i : i + MyModel.maxlen])
             next_chars.append(text[i + MyModel.maxlen])
         print("Number of sequences: ", len(sentences))
+
+        f = open("dev result.txt", "a")
 
         num_correct = 0
         # then run_pred on it
@@ -195,7 +261,16 @@ class MyModel:
                 print(f"...Generated with diversity {MyModel.diversity}: {guess}")
                 print(f"correct next char: '{next_chars[i]}'")
 
+                f.write('\n...Generating with seed: "' + sentence + '"\n')
+                f.write(f"...Generated with diversity {MyModel.diversity}: {guess}\n")
+                f.write(f"correct next char: '{next_chars[i]}\n'")
+
         print(f"{num_correct} correct guesses out of {len(sentences)}")
+        print(f"Accuracy of this model is {num_correct / len(sentences) * 100} percent")
+
+        f.write(f"{num_correct} correct guesses out of {len(sentences)}\n")
+        f.write(f"Accuracy of this model is {num_correct / len(sentences) * 100} percent")
+        f.close()
 
     def sample(self, preds, temperature=1.0):
         # helper function to sample an index from a probability array
@@ -209,21 +284,15 @@ class MyModel:
     def save(self, work_dir):
         model = MyModel.model
         model.save(work_dir)
-        print("Saving model...")
-        print("Verify saving model")
-        reconstructed_model = keras.models.load_model(work_dir)
-        train_data_x , train_data_y = MyModel.load_training_data()
-        np.testing.assert_allclose(
-            model.predict(train_data_x), reconstructed_model.predict(train_data_x)
-        )
-        model.summary()
+        print("model saved")
 
     @classmethod
-    def load(cls, work_dir, url):
+    def load(cls, work_dir):
         model = keras.models.load_model(work_dir)
         MyModel.model = model
         MyModel.model.summary()
-        return MyModel(url)
+        # print(MyModel.history.keys())
+        return MyModel()
 
 
 if __name__ == '__main__':
@@ -250,11 +319,13 @@ if __name__ == '__main__':
             print('Making working directory {}'.format(args.work_dir))
             os.makedirs(args.work_dir)
         print('Instatiating model')
-        model = MyModel(en_url)
+        model = MyModel()
         print('Loading training data')
         train_data = MyModel.load_training_data()
+        print('Loading dev data')
+        dev_data = MyModel.load_dev_data()
         print('Training')
-        model.run_train(train_data, args.work_dir)
+        model.run_train(train_data, dev_data, args.work_dir)
         print('Saving model')
         model.save(args.work_dir)
     elif args.mode == 'dev':
@@ -264,7 +335,7 @@ if __name__ == '__main__':
         model.run_dev()
     elif args.mode == 'test':
         print('Loading model')
-        model = MyModel.load(args.work_dir, en_url)
+        model = MyModel.load(args.work_dir)
         print('Loading test data from {}'.format(args.test_data))
         test_data = MyModel.load_test_data(args.test_data)
         print('Making predictions')
