@@ -1,0 +1,178 @@
+
+...Generating with seed: "одня хорошая погода,"
+...Generated with diversity 1.5:  - 
+correct next char: ' 
+'
+...Generating with seed: "я хорошая погода, Га"
+...Generated with diversity 1.5: нкк
+correct next char: 'н
+'
+...Generating with seed: "шая погода, Ганьярд?"
+...Generated with diversity 1.5:    
+correct next char: ' 
+'
+...Generating with seed: " погода, Ганьярд? Эт"
+...Generated with diversity 1.5: ооо
+correct next char: 'о
+'
+...Generating with seed: "года, Ганьярд? Это з"
+...Generated with diversity 1.5: ваи
+correct next char: 'а
+'
+...Generating with seed: "а, Ганьярд? Это зави"
+...Generated with diversity 1.5: лсс
+correct next char: 'с
+'
+...Generating with seed: "Ганьярд? Это зависит"
+...Generated with diversity 1.5: !!ю
+correct next char: '!
+'
+...Generating with seed: "д? Это зависит! Буде"
+...Generated with diversity 1.5: штш
+correct next char: 'т
+'
+...Generating with seed: " зависит! Будет сего"
+...Generated with diversity 1.5: ддд
+correct next char: 'д
+'
+...Generating with seed: "ит! Будет сегодня хо"
+...Generated with diversity 1.5: врр
+correct next char: 'р
+'
+...Generating with seed: " сегодня хорошая пог"
+...Generated with diversity 1.5: чио
+correct next char: 'о
+'
+...Generating with seed: "годня хорошая погода"
+...Generated with diversity 1.5: .,,
+correct next char: ',
+'
+...Generating with seed: "да, Ганьярд? Это зав"
+...Generated with diversity 1.5: ищя
+correct next char: 'и
+'
+...Generating with seed: " Ганьярд? Это зависи"
+...Generated with diversity 1.5: тмт
+correct next char: 'т
+'
+...Generating with seed: "рд? Это зависит! Это"
+...Generated with diversity 1.5:  г 
+correct next char: ' 
+'
+...Generating with seed: " Это зависит! Это тв"
+...Generated with diversity 1.5: уоо
+correct next char: 'о
+'
+...Generating with seed: "о зависит! Это твоей"
+...Generated with diversity 1.5:    
+correct next char: ' 
+'
+...Generating with seed: "ависит! Это твоей же"
+...Generated with diversity 1.5:  ны
+correct next char: 'н
+'
+...Generating with seed: "твоей жене пришло в "
+...Generated with diversity 1.5: бгв
+correct next char: 'г
+'
+...Generating with seed: "ей жене пришло в гол"
+...Generated with diversity 1.5: ооо
+correct next char: 'о
+'
+...Generating with seed: "ришло в голову. Знач"
+...Generated with diversity 1.5: еиь
+correct next char: 'и
+'
+...Generating with seed: "ло в голову. Значит,"
+...Generated with diversity 1.5:    
+correct next char: ' 
+'
+...Generating with seed: "в голову. Значит, те"
+...Generated with diversity 1.5: яб 
+correct next char: 'б
+'
+...Generating with seed: "тебе и платить. Стар"
+...Generated with diversity 1.5: иса
+correct next char: 'и
+'
+...Generating with seed: "атить. Старина! Сдел"
+...Generated with diversity 1.5: аал
+correct next char: 'а
+'
+...Generating with seed: " Старина! Сделай мне"
+...Generated with diversity 1.5: .  
+correct next char: ' 
+'
+...Generating with seed: "на! Сделай мне одолж"
+...Generated with diversity 1.5: ,ие
+correct next char: 'е
+'
+...Generating with seed: " Сделай мне одолжени"
+...Generated with diversity 1.5: йее
+correct next char: 'е
+'
+...Generating with seed: "елай мне одолжение и"
+...Generated with diversity 1.5:  м 
+correct next char: ' 
+'
+...Generating with seed: "не одолжение и сейча"
+...Generated with diversity 1.5: ссс
+correct next char: 'с
+'
+...Generating with seed: "одолжение и сейчас ж"
+...Generated with diversity 1.5: еие
+correct next char: 'е
+'
+...Generating with seed: "лжение и сейчас же р"
+...Generated with diversity 1.5: аэе
+correct next char: 'а
+'
+...Generating with seed: "ние и сейчас же расс"
+...Generated with diversity 1.5: оте
+correct next char: 'о
+'
+...Generating with seed: "сейчас же рассорься "
+...Generated with diversity 1.5: ннс
+correct next char: 'с
+'
+...Generating with seed: "рься с ее мужем! Вот"
+...Generated with diversity 1.5:   а
+correct next char: ' 
+'
+...Generating with seed: " ее мужем! Вот напас"
+...Generated with diversity 1.5: икт
+correct next char: 'т
+'
+...Generating with seed: " мужем! Вот напасть!"
+...Generated with diversity 1.5:  ..
+correct next char: ' 
+'
+...Generating with seed: "жем! Вот напасть! Зн"
+...Generated with diversity 1.5: оая
+correct next char: 'а
+'
+...Generating with seed: "! Вот напасть! Знаеш"
+...Generated with diversity 1.5: ььь
+correct next char: 'ь
+'
+...Generating with seed: "напасть! Знаешь, есл"
+...Generated with diversity 1.5: иии
+correct next char: 'и
+'
+...Generating with seed: "асть! Знаешь, если м"
+...Generated with diversity 1.5: ооы
+correct next char: 'о
+'
+...Generating with seed: "ешь, если моя разозл"
+...Generated with diversity 1.5: ивд
+correct next char: 'и
+'
+...Generating with seed: "сли моя разозлит мен"
+...Generated with diversity 1.5: яяя
+correct next char: 'я
+'
+...Generating with seed: "еня, я ей задам. Тиш"
+...Generated with diversity 1.5: уео
+correct next char: 'е
+'44 correct guesses out of 89
+Accuracy of this model is 49.43820224719101 percent

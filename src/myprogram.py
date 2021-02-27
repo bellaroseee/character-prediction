@@ -340,7 +340,7 @@ if __name__ == '__main__':
     parser.add_argument('mode', choices=('train', 'test', 'dev'), help='what to run')
     parser.add_argument('--work_dir', help='where to save', default='work')
     parser.add_argument('--test_data', help='path to test data', default='./example/input.txt')
-    parser.add_argument('--test_output', help='path to write test predictions', default='pred.txt')
+    .add_argument('--test_output', help='path to write test predicparsertions', default='pred.txt')
     parser.add_argument('--lang_train', help='language to train (en, ru, ch, it, ja)', default='en_url')
     args = parser.parse_args()
 
