@@ -50,20 +50,20 @@ class MyModel:
         ru_url = "https://447groupproject7285.blob.core.windows.net/datasets/finalRussianParse.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
         ch_url = "https://447groupproject7285.blob.core.windows.net/datasets/finalChineseParse.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
         it_url = "https://447groupproject7285.blob.core.windows.net/datasets/finalItalianParse.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
-        jp_url = "https://447groupproject7285.blob.core.windows.net/datasets/finalJapaneseParse.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
-        
+        ja_url = "https://447groupproject7285.blob.core.windows.net/datasets/finalJapaneseParse.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
+
         ast_fname = "finalprocessedatels"
-        en_fname = "finalEnglishParse" 
+        en_fname = "finalEnglishParse"
         ru_fname = "finalRussianParse"
         ch_fname = "finalChineseParse"
         it_fname = "finalItalianParse"
-        jp_fname = "finalJapaneseParse"
+        ja_fname = "finalJapaneseParse"
 
         url = ""
         fname = ""
-        if (lang == "jp"):
-            url = jp_url
-            fname = jp_fname
+        if (lang == "ja"):
+            url = ja_url
+            fname = ja_fname
         elif (lang == "ru"):
             url = ru_url
             fname = ru_fname
@@ -73,7 +73,7 @@ class MyModel:
         elif (lang == "it"):
             url = it_url
             fname = it_fname
-        
+
         if (lang == "en"):
             path_to_file1 = keras.utils.get_file(ast_fname, ast_url)
             path_to_file2 = keras.utils.get_file(en_fname, en_url)
@@ -99,7 +99,7 @@ class MyModel:
         MyModel.chars = toBeChars
         MyModel.char_indices = dict((c, i) for i, c in enumerate(MyModel.chars))
         MyModel.indices_char = dict((i, c) for i, c in enumerate(MyModel.chars))
-        
+
     @classmethod
     def toUnk(self, data):
         not_unked_data = data
@@ -115,7 +115,7 @@ class MyModel:
         sort_orders = sorted(charCount.items(), key=lambda x: x[1])
         key1 = sort_orders[0]
         key2 = sort_orders[1]
-        
+
         #add data with characters replaced with UNK to return value
         newData = ""
         for row in not_unked_data:
@@ -126,7 +126,7 @@ class MyModel:
             else:
               newData += char
         return newData
-    
+
     @classmethod
     def load_training_data(cls):
         train_data = MyModel.toUnk(MyModel.data[20:])
@@ -190,7 +190,7 @@ class MyModel:
             for t, char in enumerate(sentence):
                 x_valid[i, t, MyModel.char_indices[char]] = 1
             y_valid[i, MyModel.char_indices[next_chars[i]]] = 1
-        
+
         return [x_valid, y_valid]
 
     @classmethod
@@ -219,7 +219,7 @@ class MyModel:
                 layers.BatchNormalization(),
                 layers.Dropout(MyModel.dropout),
                 layers.Dense(len(MyModel.chars), activation="softmax"), # densely connected NN layer with output of dimension 40 & softmax activation function.
-            ], 
+            ],
         )
         # optimizer = keras.optimizers.RMSprop(learning_rate=0.0001)
         optimizer = keras.optimizers.Adam(learning_rate=MyModel.learning_rate)
@@ -227,7 +227,7 @@ class MyModel:
 
         MyModel.history = MyModel.model.fit(x, y, batch_size=MyModel.batch_size, epochs=MyModel.epochs, validation_data=(x_valid, y_valid))
         self.display_model(MyModel.history)
-    
+
     def display_model(self, history):
         print(f"printing model history")
         print(history.history.keys())
@@ -252,7 +252,7 @@ class MyModel:
             guess = ""
             for a in range(3):
                 x_pred = np.zeros((1, MyModel.maxlen, len(MyModel.chars)))
-                for t, char in enumerate(sentence): 
+                for t, char in enumerate(sentence):
                     x_pred[0, t, MyModel.char_indices[char]] = 1.0 # map True value on x_pred based on 'sentence'
                 preds = MyModel.model.predict(x_pred, verbose=0)[0]
                 next_index = self.sample(preds, MyModel.diversity)
@@ -263,7 +263,7 @@ class MyModel:
             prediction.append(''.join(guess))
 
         return prediction
-    
+
     def run_dev(self):
         # get dev data
         dev_data = MyModel.data[10:20]
@@ -288,7 +288,7 @@ class MyModel:
 
             for a in range(3):
                 x_pred = np.zeros((1, MyModel.maxlen, len(MyModel.chars)))
-                for t, char in enumerate(sentence): 
+                for t, char in enumerate(sentence):
                     x_pred[0, t, MyModel.char_indices[char]] = 1.0 # map True value on x_pred based on 'sentence'
                 preds = MyModel.model.predict(x_pred, verbose=0)[0]
                 next_index = self.sample(preds, MyModel.diversity)
@@ -335,16 +335,16 @@ class MyModel:
 
 
 if __name__ == '__main__':
-    
+
     parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
     parser.add_argument('mode', choices=('train', 'test', 'dev'), help='what to run')
     parser.add_argument('--work_dir', help='where to save', default='work')
     parser.add_argument('--test_data', help='path to test data', default='./example/input.txt')
     parser.add_argument('--test_output', help='path to write test predictions', default='pred.txt')
-    parser.add_argument('--lang_train', help='language to train (en, ru, ch, it, jp)', default='en_url')
+    parser.add_argument('--lang_train', help='language to train (en, ru, ch, it, ja)', default='en_url')
     args = parser.parse_args()
 
-    
+
     # random.seed(0)
 
     if args.mode == 'train':
