@@ -36,6 +36,7 @@ class MyModel:
     text_train = ""
     history = None
     unk = ""
+    lang = ""
     random.seed(500)
 
     # HYPERPARAMETERS
@@ -51,6 +52,7 @@ class MyModel:
     dropout = 0.2
 
     def __init__(self, lang):
+        MyModel.lang = lang
         # languages url
         ast_url ="https://447groupproject7285.blob.core.windows.net/datasets/finalprocessedatels.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
         en_url = "https://447groupproject7285.blob.core.windows.net/datasets/finalEnglishParse.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
@@ -234,6 +236,7 @@ class MyModel:
 
         MyModel.history = MyModel.model.fit(x, y, batch_size=MyModel.batch_size, epochs=MyModel.epochs, validation_data=(x_valid, y_valid))
         self.display_model(MyModel.history)
+        MyModel.model.name = MyModel.lang + " model"
 
     def display_model(self, history):
         print(f"printing model history")
@@ -384,18 +387,30 @@ if __name__ == '__main__':
         print('Writing predictions to {}'.format(args.test_output))
         assert len(pred) == len(test_data), 'Expected {} predictions but got {}'.format(len(test_data), len(pred))
         model.write_pred(pred, args.test_output)
-    # elif args.mode = 'test-all':
-    #     print("Load all model")
-    #     languageToLanguageModel = {}
-    #     languagesList = ["en", "ru", "ja", "ch", "it"]
-    #     workdir = ["en_work", "ru_work", "ja_work", "ch_work", "it_work"]
-    #     i = 0
-    #     for lang in languagesList:
-    #         languageToLanguageModel[lang] = MyModel.load(lang, work_dir="work/" + workdir[i])
-    #         i += 1
-    #     print("finish loading all models")
+    elif args.mode == 'test-all':
+        set_of_covered_languages = set({"en", "ru", "ja", "ch", "it"})
 
-    #     f = open(args.test_data, "r")
-    #     f
+        model = MyModel.load("en", "work/en_work")
+        print('Loading test data from {}'.format(args.test_data))
+        test_data = MyModel.load_test_data(args.test_data)
+        
+        test_data_lang = []
+        for data in test_data:
+            language = LanguageDetection().predictLanguage(data)
+            if (language not in set_of_covered_languages): # default to english if language is not one of the main languages
+                language = "en"
+            test_data_lang.append(language)
+        
+        test_data_dir = []
+        for lang in test_data:
+            test_data_dir.append(lang + "_work")
+
+        for data, lang, directory in zip(test_data, test_data_lang, test_data_dir):
+            if (model != model): #This line may need adjustment
+                print("loading new model...")
+                model = MyModel.load(lang, directory)
+            pred = model.run_pred([data])
+            print(f"{data} predicts {pred[0]}")
+
     else:
         raise NotImplementedError('Unknown mode {}'.format(args.mode))
