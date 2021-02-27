@@ -16,11 +16,8 @@ print("Loading language models...")
 languageToLanguageModel = {}
 set_of_covered_languages = set({"en", "ru", "ja", "ch", "it"})
 languagesList = ["en", "ru", "ja", "ch", "it"]
-workdir = ["en_work", "ru_work", "ja_work", "ch_work", "it_work"]
-i = 0
 for lang in languagesList:
-  languageToLanguageModel[lang] = MyModel.load(lang, work_dir="work/" + workdir[i])
-  i += 1
+  languageToLanguageModel[lang] = MyModel.load(lang, work_dir="work/" + lang + "_work")
 
 # # create dictionaries for language translation
 # # maps each language to its dictionary
@@ -58,25 +55,59 @@ if __name__=="__main__":
   language = "en"
   languageDetection = LanguageDetection()
 
+  print("Predicting language...")
+  languageList = ["en", "ru", "ja", "ch", "it", "else"]
+  countList = [0, 0, 0, 0, 0, 0]
   for sentence in f:
-    print("Predicting language...")
     language = languageDetection.predictLanguage(sentence)
     if (language not in set_of_covered_languages): # default to english if language is not one of the main languages
-      language = "en"
+      language = "else"
+    if language == "en":
+      countList[0] += 1
+    elif language == "ru":
+      countList[1] += 1
+    elif language == "ja":
+      countList[2] += 1
+    elif language == "ch":
+      countList[3] += 1
+    elif language == "it":
+      countList[4] += 1
+    else:
+      countList[5] += 1
 
-    print("language: " + language)
-    # get the language model
-    currLanguageModel = languageToLanguageModel[language]
-
-    # use the language model to predict the characters
-    # ...
-    print("Predicting results...")
-    pred = currLanguageModel.run_pred(data=np.array([sentence]))
-
-    predList.append(pred[0])
-
-
-  languageToLanguageModel["en"].write_pred(predList, args.test_output)
-
-
+  idx = np.argmax(countList)
+  lang = languageList[idx]
   f.close()
+
+  print("Predicting results...")
+  currLanguageModel = languageToLanguageModel[language]
+
+  print('Loading test data from {}'.format(args.test_data))
+  test_data = currLanguageModel.load_test_data(args.test_data)
+  print('Making predictions')
+  pred = currLanguageModel.run_pred(test_data)
+  print('Writing predictions to {}'.format(args.test_output))
+  assert len(pred) == len(test_data), 'Expected {} predictions but got {}'.format(len(test_data), len(pred))
+  currLanguageModel.write_pred(pred, args.test_output)
+
+
+  # for sentence in f:
+  #   print("Predicting language...")
+  #   language = languageDetection.predictLanguage(sentence)
+  #   if (language not in set_of_covered_languages): # default to english if language is not one of the main languages
+  #     language = "en"
+
+  #   print("language: " + language)
+  #   # get the language model
+  #   currLanguageModel = languageToLanguageModel[language]
+
+  #   # use the language model to predict the characters
+  #   # ...
+  #   print("Predicting results...")
+  #   pred = languageToLanguageModel[language].run_pred(data=[sentence])
+
+  #   predList.append(pred[0])
+
+
+  # languageToLanguageModel["en"].write_pred(predList, args.test_output)
+
