@@ -15,6 +15,7 @@ import io
 import pandas as pd
 import pickle
 import matplotlib.pyplot as plt
+import time
 
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 
@@ -41,12 +42,12 @@ class MyModel:
 
     # HYPERPARAMETERS
     batch_size = 200
-    epochs = 50
+    epochs = 10
     maxlen = 20
     step = 3
     diversity = 1.5
     hidden_dim = 300
-    learning_rate = 0.001
+    learning_rate = 0.0005
     l1_reg = 1e-4
     l2_reg = 1e-5
     dropout = 0.2
@@ -234,9 +235,12 @@ class MyModel:
         optimizer = keras.optimizers.Adam(learning_rate=MyModel.learning_rate)
         MyModel.model.compile(loss="categorical_crossentropy", optimizer=optimizer, metrics="accuracy")
 
+        start_time = time.time()
         MyModel.history = MyModel.model.fit(x, y, batch_size=MyModel.batch_size, epochs=MyModel.epochs, validation_data=(x_valid, y_valid))
+        train_runtime = time.time() - start_time 
+        train_secs = train_runtime % 3600
+        print(f"Training finished in {train_runtime//3600} hours and {train_secs//60} minutes")
         self.display_model(MyModel.history)
-        MyModel.model.name = MyModel.lang + " model"
 
     def display_model(self, history):
         print(f"printing model history")
@@ -274,7 +278,7 @@ class MyModel:
 
         return prediction
 
-    def run_dev(self):
+    def run_dev(self, data):
         # get dev data
         dev_data = MyModel.data[10:20]
         text = ""
@@ -375,8 +379,10 @@ if __name__ == '__main__':
     elif args.mode == 'dev':
         print('Loading model')
         model = MyModel.load(args.lang_train, args.work_dir)
+        print('Load dev data')
+        dev_data = MyModel.load_dev_data()
         print('Run prediction on dev data')
-        model.run_dev()
+        model.run_dev(dev_data)
     elif args.mode == 'test':
         print('Loading model')
         model = MyModel.load(args.lang_train, args.work_dir)
