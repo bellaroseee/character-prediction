@@ -18,10 +18,10 @@ import matplotlib.pyplot as plt
 
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 
-from langdetect import DetectorFactory
-DetectorFactory.seed = 0
-from langdetect import detect
-from languageDetection import LanguageDetection
+#from langdetect import DetectorFactory
+#DetectorFactory.seed = 0
+#from langdetect import detect
+#from languageDetection import LanguageDetection
 from os import listdir
 from os.path import isfile, join
 
@@ -41,7 +41,7 @@ class MyModel:
 
     # HYPERPARAMETERS
     batch_size = 200
-    epochs = 50
+    epochs = 1
     maxlen = 20
     step = 3
     diversity = 1.5
@@ -93,7 +93,7 @@ class MyModel:
         else :
             # Load data
             path_to_file = keras.utils.get_file(fname, url)
-            data = pd.read_csv(path_to_file, nrows=150000)
+            data = pd.read_csv(path_to_file, nrows=40000)
             MyModel.data = data["Text processed"]
 
         # create chars, char_indices and indices_char
