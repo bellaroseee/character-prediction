@@ -42,11 +42,10 @@ class MyModel:
 
     # HYPERPARAMETERS
     batch_size = 200
-    epochs = 1
-    epochs = 1
+    epochs = 25
     maxlen = 20
     step = 3
-    diversity = 1.5
+    diversity = 0.7
     hidden_dim = 300
     learning_rate = 0.0005
     l1_reg = 1e-4
@@ -95,7 +94,7 @@ class MyModel:
         else :
             # Load data
             path_to_file = keras.utils.get_file(fname, url)
-            data = pd.read_csv(path_to_file, nrows=40000)
+            data = pd.read_csv(path_to_file, nrows=15000)
             MyModel.data = data["Text processed"]
 
         # create chars, char_indices and indices_char
@@ -149,7 +148,8 @@ class MyModel:
         sentences = []
         next_chars = []
         for i in range(0, len(text) - MyModel.maxlen, MyModel.step):
-            temp_len = random.randint(0, MyModel.maxlen)
+            #temp_len = random.randint(0, MyModel.maxlen)
+            temp_len = MyModel.maxlen
             sentences.append(text[i : i + temp_len])
             next_chars.append(text[i + temp_len])
 
