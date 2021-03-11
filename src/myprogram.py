@@ -42,7 +42,7 @@ class MyModel:
 
     # HYPERPARAMETERS
     batch_size = 200
-    epochs = 100
+    epochs = 10
     maxlen = 20
     step = 3
     diversity = 1.5
@@ -222,12 +222,10 @@ class MyModel:
                 layers.BatchNormalization(),
                 layers.Dropout(MyModel.dropout),
                 layers.LSTM(MyModel.hidden_dim, return_sequences=True, kernel_regularizer=regularizers.l2(MyModel.l2_reg)),
-                layers.BatchNormalization(),
                 layers.Dropout(MyModel.dropout),
                 layers.LSTM(MyModel.hidden_dim, return_sequences=True, kernel_regularizer=regularizers.l2(MyModel.l2_reg)),
                 layers.Dropout(MyModel.dropout),
                 layers.LSTM(MyModel.hidden_dim, kernel_regularizer=regularizers.l2(MyModel.l2_reg)),
-                layers.BatchNormalization(),
                 layers.Dropout(MyModel.dropout),
                 layers.Dense(len(MyModel.chars), activation="softmax"), # densely connected NN layer with output of dimension 40 & softmax activation function.
             ],
