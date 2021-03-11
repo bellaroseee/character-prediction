@@ -42,10 +42,10 @@ class MyModel:
 
     # HYPERPARAMETERS
     batch_size = 200
-    epochs = 25
+    epochs = 100
     maxlen = 20
     step = 3
-    diversity = 0.7
+    diversity = 1.5
     hidden_dim = 300
     learning_rate = 0.0005
     l1_reg = 1e-4
@@ -148,8 +148,7 @@ class MyModel:
         sentences = []
         next_chars = []
         for i in range(0, len(text) - MyModel.maxlen, MyModel.step):
-            #temp_len = random.randint(0, MyModel.maxlen)
-            temp_len = MyModel.maxlen
+            temp_len = random.randint(5, MyModel.maxlen)
             sentences.append(text[i : i + temp_len])
             next_chars.append(text[i + temp_len])
 
@@ -192,8 +191,9 @@ class MyModel:
         sentences = []
         next_chars = []
         for i in range(0, len(text) - MyModel.maxlen, MyModel.step):
-            sentences.append(text[i : i + MyModel.maxlen])
-            next_chars.append(text[i + MyModel.maxlen])
+            temp_len = random.randint(5, MyModel.maxlen)
+            sentences.append(text[i : i + temp_len])
+            next_chars.append(text[i + temp_len])
 
         x_valid = np.zeros((len(sentences), MyModel.maxlen, len(MyModel.chars)), dtype=np.bool)
         y_valid = np.zeros((len(sentences), len(MyModel.chars)), dtype=np.bool)
@@ -283,16 +283,17 @@ class MyModel:
 
     def run_dev(self, data):
         # get dev data
-        dev_data = MyModel.data[10:20]
+        dev_data = MyModel.toUnk(MyModel.data[10:20])
         text = ""
         for row in dev_data:
-            text += row
+            text += str(row)
 
         sentences = []
         next_chars = []
         for i in range(0, len(text) - MyModel.maxlen, MyModel.step):
-            sentences.append(text[i : i + MyModel.maxlen])
-            next_chars.append(text[i + MyModel.maxlen])
+            temp_len = random.randint(5, MyModel.maxlen)
+            sentences.append(text[i : i + temp_len])
+            next_chars.append(text[i + temp_len])
         print("Number of sequences: ", len(sentences))
 
         f = open("dev result.txt", "a")
