@@ -265,15 +265,17 @@ class MyModel:
             sentence = inp
             print('\n...Generating with seed: "' + sentence + '"')
             guess = ""
-            for a in range(3):
+            i = 0
+            while len(guess) < 3 and i < 25:
                 x_pred = np.zeros((1, MyModel.maxlen, len(MyModel.chars)))
                 for t, char in enumerate(sentence):
                     x_pred[0, t, MyModel.char_indices[char]] = 1.0 # map True value on x_pred based on 'sentence'
                 preds = MyModel.model.predict(x_pred, verbose=0)[0]
                 next_index = self.sample(preds, MyModel.diversity)
                 next_char = MyModel.indices_char[next_index]
-                if next_char is not MyModel.unk:
+                if next_char is not MyModel.unk and next_char not in guess:
                     guess += next_char
+                i += 1
             print(f"...Generated with diversity {MyModel.diversity}: {guess}")
             prediction.append(''.join(guess))
 
