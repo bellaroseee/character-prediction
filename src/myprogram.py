@@ -42,7 +42,7 @@ class MyModel:
 
     # HYPERPARAMETERS
     batch_size = 200
-    epochs = 10
+    epochs = 5
     maxlen = 20
     step = 3
     diversity = 1.5
@@ -55,19 +55,20 @@ class MyModel:
     def __init__(self, lang):
         MyModel.lang = lang
         # languages url
-        ast_url ="https://447groupproject7285.blob.core.windows.net/datasets/finalprocessedatels.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
-        en_url = "https://447groupproject7285.blob.core.windows.net/datasets/finalEnglishParse.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
-        ru_url = "https://447groupproject7285.blob.core.windows.net/datasets/finalRussianParse.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
-        ch_url = "https://447groupproject7285.blob.core.windows.net/datasets/finalChineseParse.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
-        it_url = "https://447groupproject7285.blob.core.windows.net/datasets/finalItalianParse.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
-        ja_url = "https://447groupproject7285.blob.core.windows.net/datasets/finalJapaneseParse.csv?sv=2020-02-10&ss=b&srt=sco&sp=rwdlacx&se=2021-03-31T10:15:18Z&st=2021-02-17T03:15:18Z&spr=https,http&sig=O%2BAaFAVFEUIsgVusVbEk%2BE54r6RbuJuaGoXYjk5Y4WU%3D"
+        ast_url ="https://447finalproject.blob.core.windows.net/dataset/finalAtelsParse.csv?sp=r&st=2021-03-11T22:01:19Z&se=2021-04-01T05:01:19Z&spr=https&sv=2020-02-10&sr=b&sig=8B7rHplXFm825EZVYxSmTg3p5hKWC4xFd6'%'2FhanIZTOU%3D"
+        en_url = "https://447finalproject.blob.core.windows.net/dataset/finalEnglishParse.csv?sp=r&st=2021-03-11T21:59:20Z&se=2021-04-01T04:59:20Z&spr=https&sv=2020-02-10&sr=b&sig=aziXoq0n0uQdjfM06qkCCMszChKK%2BPzEbdyg6675HSE%3D"
+        ru_url = "https://447finalproject.blob.core.windows.net/dataset/finalRussianParse.csv?sp=r&st=2021-03-11T21:01:19Z&se=2021-04-01T04:01:19Z&spr=https&sv=2020-02-10&sr=b&sig=7EI9QzlpD1asPbDy74iztUdmr8YkemQFQFkf7ITDRgI%3D"
+        ch_url = "https://447finalproject.blob.core.windows.net/dataset/finalChineseParse.csv?sp=r&st=2021-03-11T21:47:58Z&se=2021-04-01T04:47:58Z&spr=https&sv=2020-02-10&sr=b&sig=qBoSCRzsePF7cuXyagM8yjeXQ8x2fR34Gl4ydK8rdMI%3D"
+        it_url = "https://447finalproject.blob.core.windows.net/dataset/finalItalianParse.csv?sp=r&st=2021-03-11T21:59:49Z&se=2021-03-12T05:59:49Z&spr=https&sv=2020-02-10&sr=b&sig=3HMHakozBepjT9q1zxfqaNfKb%2BgO2E947dJ%2BQxGU0Cw%3D"
+        ja_url = "https://447finalproject.blob.core.windows.net/dataset/finalJapaneseParse.csv?sp=r&st=2021-03-11T20:47:47Z&se=2021-04-01T03:47:47Z&spr=https&sv=2020-02-10&sr=b&sig=yU%2B%2BQBYJTDCDfsvKpufq8K9XZZzSLuGDQWqYBVVM3F4%3D"
 
-        ast_fname = "finalprocessedatels"
-        en_fname = "finalEnglishParse"
-        ru_fname = "finalRussianParse"
-        ch_fname = "finalChineseParse"
-        it_fname = "finalItalianParse"
-        ja_fname = "finalJapaneseParse"
+        # file names
+        ast_fname = "AtelsParse"
+        en_fname = "EnglishParse"
+        ru_fname = "RussianParse"
+        ch_fname = "ChineseParse"
+        it_fname = "ItalianParse"
+        ja_fname = "JapaneseParse"
 
         url = ""
         fname = ""
@@ -94,7 +95,7 @@ class MyModel:
         else :
             # Load data
             path_to_file = keras.utils.get_file(fname, url)
-            data = pd.read_csv(path_to_file, nrows=15000)
+            data = pd.read_csv(path_to_file, nrows=2000)
             MyModel.data = data["Text processed"]
 
         # create chars, char_indices and indices_char
@@ -177,8 +178,6 @@ class MyModel:
                     newLine += MyModel.unk
                 inp = newLine[:-1]  # the last character is a newline
                 data.append(inp)
-        # this is for creating test data from data source
-        # test_data = MyModel.data[:10]
         return data
 
     @classmethod
@@ -217,8 +216,8 @@ class MyModel:
         # initialize model
         MyModel.model = keras.Sequential( # stack layers into tf.keras.Model.
             [
-                keras.Input(shape=(MyModel.maxlen, len(MyModel.chars))), # input is Keras tensor of shape (40, 180)
-                layers.LSTM(MyModel.hidden_dim, return_sequences=True, kernel_regularizer=regularizers.l2(MyModel.l2_reg)), # 500 is the dimensionality of output space
+                keras.Input(shape=(MyModel.maxlen, len(MyModel.chars))),
+                layers.LSTM(MyModel.hidden_dim, return_sequences=True, kernel_regularizer=regularizers.l2(MyModel.l2_reg)),
                 layers.BatchNormalization(),
                 layers.Dropout(MyModel.dropout),
                 layers.LSTM(MyModel.hidden_dim, return_sequences=True, kernel_regularizer=regularizers.l2(MyModel.l2_reg)),
@@ -227,7 +226,7 @@ class MyModel:
                 layers.Dropout(MyModel.dropout),
                 layers.LSTM(MyModel.hidden_dim, kernel_regularizer=regularizers.l2(MyModel.l2_reg)),
                 layers.Dropout(MyModel.dropout),
-                layers.Dense(len(MyModel.chars), activation="softmax"), # densely connected NN layer with output of dimension 40 & softmax activation function.
+                layers.Dense(len(MyModel.chars), activation="softmax"),
             ],
         )
         # optimizer = keras.optimizers.RMSprop(learning_rate=0.0001)
