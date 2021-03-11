@@ -42,7 +42,7 @@ class MyModel:
 
     # HYPERPARAMETERS
     batch_size = 200
-    epochs = 5
+    epochs = 30
     maxlen = 20
     step = 3
     diversity = 1.5
