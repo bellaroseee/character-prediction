@@ -65,6 +65,7 @@ class MyModel:
         es_url = "https://447finalproject.blob.core.windows.net/dataset/finalSpanishParse.csv?sp=r&st=2021-03-11T22:29:04Z&se=2021-04-01T05:29:04Z&spr=https&sv=2020-02-10&sr=b&sig=zRvbsSjleWoPPS8WeSti483w0VSYWauP0dw%2FCohjF8Y%3D"
         de_url = "https://447finalproject.blob.core.windows.net/dataset/finalGermanParse.csv?sp=r&st=2021-03-11T22:29:48Z&se=2021-04-01T05:29:48Z&spr=https&sv=2020-02-10&sr=b&sig=jvEnTw3E7Gltkpuzr5fvvxBrTNAAcgHqdZF1ifg77LI%3D"
         hi_url = "https://447finalproject.blob.core.windows.net/dataset/finalHindiParse.csv?sp=r&st=2021-03-12T04:34:15Z&se=2021-03-31T11:34:15Z&spr=https&sv=2020-02-10&sr=b&sig=oObclAlSME9EvRWbKcHYHx0MjDHeaKc7dgLfgmZPaT4%3D"
+        ara_url = "https://447finalproject.blob.core.windows.net/dataset/finalArabicParse.csv?sp=r&st=2021-03-12T22:50:27Z&se=2021-04-01T05:50:27Z&spr=https&sv=2020-02-10&sr=b&sig=zxg8FtX11O0qTgkku7I1EMJ6k5ZuebI2uZ9QUSh5K6k%3D"
 
         # file names
         ast_fname = "AtelsParse"
@@ -77,6 +78,7 @@ class MyModel:
         es_fname = "SpanishParse"
         de_fname = "GermanParse"
         hi_fname = "HindiParse"
+        ara_fname = "ArabicParse"
 
         url = ""
         fname = ""
