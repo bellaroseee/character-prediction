@@ -106,6 +106,9 @@ class MyModel:
         elif (lang == "hi"):
             url = hi_url
             fname = hi_fname
+        elif (lang == "ara"):
+            url = ara_url
+            fname = ara_fname
 
         if (lang == "en"):
             path_to_file1 = keras.utils.get_file(ast_fname, ast_url)
