@@ -42,7 +42,7 @@ class MyModel:
 
     # HYPERPARAMETERS
     batch_size = 200
-    epochs = 20
+    epochs = 30
     maxlen = 20
     step = 3
     diversity = 1.5
@@ -115,7 +115,7 @@ class MyModel:
         else :
             # Load data
             path_to_file = keras.utils.get_file(fname, url)
-            data = pd.read_csv(path_to_file, nrows=1000)
+            data = pd.read_csv(path_to_file, nrows=2000)
             print(data.head())
             MyModel.data = data["Text processed"]
 
