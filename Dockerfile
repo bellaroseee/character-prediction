@@ -1,4 +1,4 @@
-FROM pytorch/pytorch:1.8.0-cuda10.2-cudnn7-runtime
+FROM nvidia/cuda:10.2-base
 RUN mkdir /job
 WORKDIR /job
 VOLUME ["/job/data", "/job/src", "/job/work", "/job/output"]
