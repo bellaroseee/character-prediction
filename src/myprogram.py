@@ -64,6 +64,7 @@ class MyModel:
         fr_url = "https://447finalproject.blob.core.windows.net/dataset/finalFrenchParse.csv?sp=r&st=2021-03-11T22:28:41Z&se=2021-04-01T05:28:41Z&spr=https&sv=2020-02-10&sr=b&sig=jt2CesXOsSksrOYeZ6VAqKznGX3gZp12clkMQEihXeY%3D"
         es_url = "https://447finalproject.blob.core.windows.net/dataset/finalSpanishParse.csv?sp=r&st=2021-03-11T22:29:04Z&se=2021-04-01T05:29:04Z&spr=https&sv=2020-02-10&sr=b&sig=zRvbsSjleWoPPS8WeSti483w0VSYWauP0dw%2FCohjF8Y%3D"
         de_url = "https://447finalproject.blob.core.windows.net/dataset/finalGermanParse.csv?sp=r&st=2021-03-11T22:29:48Z&se=2021-04-01T05:29:48Z&spr=https&sv=2020-02-10&sr=b&sig=jvEnTw3E7Gltkpuzr5fvvxBrTNAAcgHqdZF1ifg77LI%3D"
+        hi_url = "https://447finalproject.blob.core.windows.net/dataset/finalHindiParse.csv?sp=r&st=2021-03-12T04:34:15Z&se=2021-03-31T11:34:15Z&spr=https&sv=2020-02-10&sr=b&sig=oObclAlSME9EvRWbKcHYHx0MjDHeaKc7dgLfgmZPaT4%3D"
 
         # file names
         ast_fname = "AtelsParse"
@@ -75,6 +76,7 @@ class MyModel:
         fr_fname = "FrenchParse"
         es_fname = "SpanishParse"
         de_fname = "GermanParse"
+        hi_fname = "HindiParse"
 
         url = ""
         fname = ""
@@ -99,12 +101,15 @@ class MyModel:
         elif (lang == "de"):
             url = de_url
             fname = de_fname
+        elif (lang == "hi"):
+            url = hi_url
+            fname = hi_fname
 
         if (lang == "en"):
             path_to_file1 = keras.utils.get_file(ast_fname, ast_url)
             path_to_file2 = keras.utils.get_file(en_fname, en_url)
             data1 = pd.read_csv(path_to_file1)
-            data2 = pd.read_csv(path_to_file2, nrows=150000)
+            data2 = pd.read_csv(path_to_file2, nrows=2000)
             data = data1.merge(data2, on=["Text processed"], how="outer")
             MyModel.data = data["Text processed"]
         else :
