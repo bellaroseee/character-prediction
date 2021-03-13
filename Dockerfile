@@ -1,11 +1,12 @@
-FROM nvidia/cuda:10.2-devel
+FROM pytorch/pytorch:1.6.0-cuda10.1-cudnn7-runtime
 RUN mkdir /job
 WORKDIR /job
 VOLUME ["/job/data", "/job/src", "/job/work", "/job/output"]
 
 # You should install any dependencies you need here.
 # RUN pip install tqdm
+
 RUN pip install pandas
-RUN pip install tensorflow
+RUN pip install tensorflow==2.2
 RUN pip install matplotlib
 RUN pip install langdetect
