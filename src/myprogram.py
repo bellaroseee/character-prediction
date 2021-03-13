@@ -45,9 +45,9 @@ class MyModel:
     epochs = 30
     maxlen = 20
     step = 3
-    diversity = 1.5
+    diversity = 0.5
     hidden_dim = 300
-    learning_rate = 0.0005
+    learning_rate = 0.0003
     l1_reg = 1e-4
     l2_reg = 1e-5
     dropout = 0.2
@@ -119,7 +119,6 @@ class MyModel:
         elif (lang == "multi"):
             url = multi_url
             fname = multi_fname
-
         if (lang == "en"):
             path_to_file1 = keras.utils.get_file(ast_fname, ast_url)
             path_to_file2 = keras.utils.get_file(en_fname, en_url)
@@ -304,22 +303,15 @@ class MyModel:
             sentence = inp
             print('\n...Generating with seed: "' + sentence + '"')
             guess = ""
-            i = 0
-            while len(guess) < 3 and i < 25:
+            for a in range(3):
                 x_pred = np.zeros((1, MyModel.maxlen, len(MyModel.chars)))
                 for t, char in enumerate(sentence):
                     x_pred[0, t, MyModel.char_indices[char]] = 1.0 # map True value on x_pred based on 'sentence'
                 preds = MyModel.model.predict(x_pred, verbose=0)[0]
                 next_index = self.sample(preds, MyModel.diversity)
                 next_char = MyModel.indices_char[next_index]
-                if next_char is not MyModel.unk and next_char not in guess:
+                if next_char is not MyModel.unk:
                     guess += next_char
-                i += 1
-            if len(guess) == 2:
-                guess += guess[0]
-            if len(guess) == 1:
-                guess += guess[0]
-                guess += guess[0]
             print(f"...Generated with diversity {MyModel.diversity}: {guess}")
             prediction.append(''.join(guess))
 
