@@ -82,7 +82,7 @@ class MyModel:
         hi_fname = "HindiParse"
         ara_fname = "ArabicParse"
         kr_fname = "KoreanParse"
-        multi_url = "MultiParse"
+        multi_fname = "MultiParse"
 
         url = ""
         fname = ""
@@ -113,6 +113,12 @@ class MyModel:
         elif (lang == "ara"):
             url = ara_url
             fname = ara_fname
+        elif (lang == "kr"):
+            url = kr_url
+            fname = kr_fname
+        elif (lang == "multi"):
+            url = multi_url
+            fname = multi_fname
 
         if (lang == "en"):
             path_to_file1 = keras.utils.get_file(ast_fname, ast_url)
