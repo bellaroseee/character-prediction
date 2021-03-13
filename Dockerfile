@@ -7,6 +7,6 @@ VOLUME ["/job/data", "/job/src", "/job/work", "/job/output"]
 # RUN pip install tqdm
 
 RUN pip install pandas
-RUN pip install tensorflow==2.2
+RUN pip install tensorflow==2.3
 RUN pip install matplotlib
 RUN pip install langdetect
