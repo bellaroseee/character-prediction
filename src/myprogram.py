@@ -59,13 +59,15 @@ class MyModel:
         en_url = "https://447finalproject.blob.core.windows.net/dataset/finalEnglishParse.csv?sp=r&st=2021-03-11T21:59:20Z&se=2021-04-01T04:59:20Z&spr=https&sv=2020-02-10&sr=b&sig=aziXoq0n0uQdjfM06qkCCMszChKK%2BPzEbdyg6675HSE%3D"
         ru_url = "https://447finalproject.blob.core.windows.net/dataset/finalRussianParse.csv?sp=r&st=2021-03-11T21:01:19Z&se=2021-04-01T04:01:19Z&spr=https&sv=2020-02-10&sr=b&sig=7EI9QzlpD1asPbDy74iztUdmr8YkemQFQFkf7ITDRgI%3D"
         ch_url = "https://447finalproject.blob.core.windows.net/dataset/finalChineseParse.csv?sp=r&st=2021-03-11T21:47:58Z&se=2021-04-01T04:47:58Z&spr=https&sv=2020-02-10&sr=b&sig=qBoSCRzsePF7cuXyagM8yjeXQ8x2fR34Gl4ydK8rdMI%3D"
-        it_url = "https://447finalproject.blob.core.windows.net/dataset/finalItalianParse.csv?sp=r&st=2021-03-11T21:59:49Z&se=2021-03-12T05:59:49Z&spr=https&sv=2020-02-10&sr=b&sig=3HMHakozBepjT9q1zxfqaNfKb%2BgO2E947dJ%2BQxGU0Cw%3D"
+        it_url = "https://447finalproject.blob.core.windows.net/dataset/finalItalianParse.csv?sp=r&st=2021-03-13T00:03:29Z&se=2021-03-31T07:03:29Z&spr=https&sv=2020-02-10&sr=b&sig=pBQPpOHi9Wui%2FMDplnWHYKHqYGEWzg1X8vEBD%2FS2Vek%3D"
         ja_url = "https://447finalproject.blob.core.windows.net/dataset/finalJapaneseParse.csv?sp=r&st=2021-03-11T20:47:47Z&se=2021-04-01T03:47:47Z&spr=https&sv=2020-02-10&sr=b&sig=yU%2B%2BQBYJTDCDfsvKpufq8K9XZZzSLuGDQWqYBVVM3F4%3D"
         fr_url = "https://447finalproject.blob.core.windows.net/dataset/finalFrenchParse.csv?sp=r&st=2021-03-11T22:28:41Z&se=2021-04-01T05:28:41Z&spr=https&sv=2020-02-10&sr=b&sig=jt2CesXOsSksrOYeZ6VAqKznGX3gZp12clkMQEihXeY%3D"
         es_url = "https://447finalproject.blob.core.windows.net/dataset/finalSpanishParse.csv?sp=r&st=2021-03-11T22:29:04Z&se=2021-04-01T05:29:04Z&spr=https&sv=2020-02-10&sr=b&sig=zRvbsSjleWoPPS8WeSti483w0VSYWauP0dw%2FCohjF8Y%3D"
         de_url = "https://447finalproject.blob.core.windows.net/dataset/finalGermanParse.csv?sp=r&st=2021-03-11T22:29:48Z&se=2021-04-01T05:29:48Z&spr=https&sv=2020-02-10&sr=b&sig=jvEnTw3E7Gltkpuzr5fvvxBrTNAAcgHqdZF1ifg77LI%3D"
         hi_url = "https://447finalproject.blob.core.windows.net/dataset/finalHindiParse.csv?sp=r&st=2021-03-12T04:34:15Z&se=2021-03-31T11:34:15Z&spr=https&sv=2020-02-10&sr=b&sig=oObclAlSME9EvRWbKcHYHx0MjDHeaKc7dgLfgmZPaT4%3D"
         ara_url = "https://447finalproject.blob.core.windows.net/dataset/finalArabicParse.csv?sp=r&st=2021-03-12T22:50:27Z&se=2021-04-01T05:50:27Z&spr=https&sv=2020-02-10&sr=b&sig=zxg8FtX11O0qTgkku7I1EMJ6k5ZuebI2uZ9QUSh5K6k%3D"
+        kr_url = "https://447finalproject.blob.core.windows.net/dataset/finalKoreanParse.csv?sp=r&st=2021-03-13T00:46:14Z&se=2021-03-31T07:46:14Z&spr=https&sv=2020-02-10&sr=b&sig=%2FXfIVjwdiLKFv7S3JbrlC%2FnYHpGVHRjyqVvCSuvn3Tg%3D"
+        multi_url = "https://447finalproject.blob.core.windows.net/dataset/finalMultiParse.csv?sp=r&st=2021-03-13T00:43:02Z&se=2021-03-31T07:43:02Z&spr=https&sv=2020-02-10&sr=b&sig=TH%2Ft%2FSZ3kEzXAj1hUzBzSiOQen3hK6c3I5%2FgXqVph2o%3D"
 
         # file names
         ast_fname = "AtelsParse"
@@ -79,6 +81,8 @@ class MyModel:
         de_fname = "GermanParse"
         hi_fname = "HindiParse"
         ara_fname = "ArabicParse"
+        kr_fname = "KoreanParse"
+        multi_url = "MultiParse"
 
         url = ""
         fname = ""
@@ -347,13 +351,13 @@ class MyModel:
 
             if (next_chars[i] in guess):
                 num_correct += 1
-                print('\n...Generating with seed: "' + sentence + '"')
-                print(f"...Generated with diversity {MyModel.diversity}: {guess}")
-                print(f"correct next char: '{next_chars[i]}'")
+                # print('\n...Generating with seed: "' + sentence + '"')
+                # print(f"...Generated with diversity {MyModel.diversity}: {guess}")
+                # print(f"correct next char: '{next_chars[i]}'")
 
-                f.write('\n...Generating with seed: "' + sentence + '"\n')
-                f.write(f"...Generated with diversity {MyModel.diversity}: {guess}\n")
-                f.write(f"correct next char: '{next_chars[i]}\n'")
+                # f.write('\n...Generating with seed: "' + sentence + '"\n')
+                # f.write(f"...Generated with diversity {MyModel.diversity}: {guess}\n")
+                # f.write(f"correct next char: '{next_chars[i]}\n'")
 
         print(f"{num_correct} correct guesses out of {len(sentences)}")
         print(f"Accuracy of this model is {num_correct / len(sentences) * 100} percent")
