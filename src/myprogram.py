@@ -45,9 +45,9 @@ class MyModel:
     epochs = 30
     maxlen = 20
     step = 3
-    diversity = 1.5
+    diversity = 0.5
     hidden_dim = 300
-    learning_rate = 0.0005
+    learning_rate = 0.0003
     l1_reg = 1e-4
     l2_reg = 1e-5
     dropout = 0.2
@@ -121,12 +121,6 @@ class MyModel:
              # Load data
             path_to_file = keras.utils.get_file(fname, url)
             data = pd.read_csv(path_to_file, nrows=1000)
-            print(data.head())
-            MyModel.data = data["Text processed"]
-        elif (lang == "ru"):
-             # Load data
-            path_to_file = keras.utils.get_file(fname, url)
-            data = pd.read_csv(path_to_file, nrows=3000)
             print(data.head())
             MyModel.data = data["Text processed"]
         else:
