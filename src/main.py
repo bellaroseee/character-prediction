@@ -3,7 +3,6 @@ DetectorFactory.seed = 0
 from langdetect import detect
 
 from myprogram import MyModel
-from languageDetection import LanguageDetection
 
 from os import listdir
 from os.path import isfile, join
@@ -30,9 +29,6 @@ if __name__=="__main__":
   #   lang = detect(f.read())
 
   #   f.close()
-  x = open("447-Group-Project/test_data/es-input.txt", "r")
-  print(detect(x.read()))
-  x.close()
 
   f = open(args.test_data, "r")
   lang = detect(f.read())
