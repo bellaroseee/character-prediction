@@ -58,7 +58,7 @@ class MyModel:
         ast_url ="https://447finalproject.blob.core.windows.net/dataset/finalAtelsParse.csv?sp=r&st=2021-03-11T22:01:19Z&se=2021-04-01T05:01:19Z&spr=https&sv=2020-02-10&sr=b&sig=8B7rHplXFm825EZVYxSmTg3p5hKWC4xFd6%2FhanIZTOU%3D"
         en_url = "https://447finalproject.blob.core.windows.net/dataset/finalEnglishParse.csv?sp=r&st=2021-03-11T21:59:20Z&se=2021-04-01T04:59:20Z&spr=https&sv=2020-02-10&sr=b&sig=aziXoq0n0uQdjfM06qkCCMszChKK%2BPzEbdyg6675HSE%3D"
         ru_url = "https://447finalproject.blob.core.windows.net/dataset/finalRussianParse.csv?sp=r&st=2021-03-11T21:01:19Z&se=2021-04-01T04:01:19Z&spr=https&sv=2020-02-10&sr=b&sig=7EI9QzlpD1asPbDy74iztUdmr8YkemQFQFkf7ITDRgI%3D"
-        ch_url = "https://447finalproject.blob.core.windows.net/dataset/finalChineseParse.csv?sp=r&st=2021-03-11T21:47:58Z&se=2021-04-01T04:47:58Z&spr=https&sv=2020-02-10&sr=b&sig=qBoSCRzsePF7cuXyagM8yjeXQ8x2fR34Gl4ydK8rdMI%3D"
+        ch_url = "https://447finalproject.blob.core.windows.net/dataset/newChineseParse.csv?sp=r&st=2021-03-13T01:25:19Z&se=2021-03-31T08:25:19Z&spr=https&sv=2020-02-10&sr=b&sig=LeDmESOcReLijwYBoLgQAh6nYALFFtzlEBuK5GSEn2A%3D"
         it_url = "https://447finalproject.blob.core.windows.net/dataset/finalItalianParse.csv?sp=r&st=2021-03-13T00:03:29Z&se=2021-03-31T07:03:29Z&spr=https&sv=2020-02-10&sr=b&sig=pBQPpOHi9Wui%2FMDplnWHYKHqYGEWzg1X8vEBD%2FS2Vek%3D"
         ja_url = "https://447finalproject.blob.core.windows.net/dataset/finalJapaneseParse.csv?sp=r&st=2021-03-11T20:47:47Z&se=2021-04-01T03:47:47Z&spr=https&sv=2020-02-10&sr=b&sig=yU%2B%2BQBYJTDCDfsvKpufq8K9XZZzSLuGDQWqYBVVM3F4%3D"
         fr_url = "https://447finalproject.blob.core.windows.net/dataset/finalFrenchParse.csv?sp=r&st=2021-03-11T22:28:41Z&se=2021-04-01T05:28:41Z&spr=https&sv=2020-02-10&sr=b&sig=jt2CesXOsSksrOYeZ6VAqKznGX3gZp12clkMQEihXeY%3D"
@@ -113,7 +113,13 @@ class MyModel:
         elif (lang == "ara"):
             url = ara_url
             fname = ara_fname
-
+        elif (lang == "kr"):
+            url = kr_url
+            fname = kr_fname
+        elif (lang == "multi"):
+            url = multi_url
+            fname = multi_fname
+    
         if (lang == "en"):
             path_to_file1 = keras.utils.get_file(ast_fname, ast_url)
             path_to_file2 = keras.utils.get_file(en_fname, en_url)
@@ -309,6 +315,11 @@ class MyModel:
                 if next_char is not MyModel.unk and next_char not in guess:
                     guess += next_char
                 i += 1
+            if len(guess) == 2:
+                guess += guess[0]
+            if len(guess) == 1:
+                guess += guess[0]
+                guess += guess[0]
             print(f"...Generated with diversity {MyModel.diversity}: {guess}")
             prediction.append(''.join(guess))
 
