@@ -113,7 +113,13 @@ class MyModel:
         elif (lang == "ara"):
             url = ara_url
             fname = ara_fname
-
+        elif (lang == "kr"):
+            url = kr_url
+            fname = kr_fname
+        elif (lang == "multi"):
+            url = multi_url
+            fname = multi_fname
+    
         if (lang == "en"):
             path_to_file1 = keras.utils.get_file(ast_fname, ast_url)
             path_to_file2 = keras.utils.get_file(en_fname, en_url)
