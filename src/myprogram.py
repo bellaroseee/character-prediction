@@ -309,6 +309,11 @@ class MyModel:
                 if next_char is not MyModel.unk and next_char not in guess:
                     guess += next_char
                 i += 1
+            if len(guess) == 2:
+                guess += guess[0]
+            if len(guess) == 1:
+                guess += guess[0]
+                guess += guess[0]
             print(f"...Generated with diversity {MyModel.diversity}: {guess}")
             prediction.append(''.join(guess))
 
