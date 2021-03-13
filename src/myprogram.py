@@ -123,12 +123,6 @@ class MyModel:
             data = pd.read_csv(path_to_file, nrows=1000)
             print(data.head())
             MyModel.data = data["Text processed"]
-        elif (lang == "ru"):
-             # Load data
-            path_to_file = keras.utils.get_file(fname, url)
-            data = pd.read_csv(path_to_file, nrows=3000)
-            print(data.head())
-            MyModel.data = data["Text processed"]
         else:
             # Load data
             path_to_file = keras.utils.get_file(fname, url)
