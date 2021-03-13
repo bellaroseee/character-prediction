@@ -30,17 +30,24 @@ if __name__=="__main__":
   #   lang = detect(f.read())
 
   #   f.close()
+  x = open("447-Group-Project/test_data/es-input.txt", "r")
+  print(detect(x.read()))
+  x.close()
 
   f = open(args.test_data, "r")
   lang = detect(f.read())
   f.close()
 
-  set_of_covered_languages = set({"en", "ru", "ja", "ch", "it", "de", "fr", "es", "hi"})
+  set_of_covered_languages = set({"en", "ru", "ja", "ch", "it", "de", "fr", "es", "hi", "ara", "kr"})
 
   if lang == "zh-cn":
     lang = "ch"
+  elif lang == "ar":
+    lang = "ara"
+  elif lang == "ko":
+    lang = "kr"
   if lang not in set_of_covered_languages:
-    lang = "en"
+    lang = "multi"
 
   print('Loading model')
   workdir = "work/" + lang + "_work"
